@@ -147,7 +147,30 @@ public class Tablero : MonoBehaviour {
         matrizFilas[1] = segundalinea;
         matrizFilas[2] = terceralinea;
         matrizFilas[3] = cuartalinea;
+
+        cargaSprites();
+
+        
+
+        //Las booleanas que se utilizan para marcar los principios y los finales de las animaciones
+        animacioncreacionpendiente = false;
+
+        //Las listas de animación
+        cubosAnimarCreacion = new List<GameObject>();
+
+        //Creamos dos cubos en posiciones aleatorias
+
+        generarCuboPosicionAleatoria();
+        generarCuboPosicionAleatoria();
                 
+        //Actualizamos la posición inicial
+        actualizapuntuacion(0);
+
+
+    }
+
+    private void cargaSprites()
+    {
         //Inicialización de los sprites
         grafcubo1 = Resources.Load("Cubo 1", typeof(Sprite)) as Sprite;
         grafcubo2 = Resources.Load("Cubo 2", typeof(Sprite)) as Sprite;
@@ -175,26 +198,8 @@ public class Tablero : MonoBehaviour {
         grafcubo6291456 = Resources.Load("Cubo 6291456", typeof(Sprite)) as Sprite;
         grafcubo12582912 = Resources.Load("Cubo 12582912", typeof(Sprite)) as Sprite;
 
-        //Las booleanas que se utilizan para marcar los principios y los finales de las animaciones
-        animacioncreacionpendiente = false;
-
-        //Las listas de animación
-        cubosAnimarCreacion = new List<GameObject>();
-
-        //Creamos dos cubos en posiciones aleatorias
-
-        generarCuboPosicionAleatoria();
-        generarCuboPosicionAleatoria();
-                
-        //Actualizamos la posición inicial
-        actualizapuntuacion(0);
-
-        
-
-        
-
-
     }
+
 
     //Crea un cubo de unas determinadas características en una posición determinada
     private void crearCubo(Vector2 coordenadas, GameObject[] linea, int posicion, int tipocubo, string tipoanimacion)
