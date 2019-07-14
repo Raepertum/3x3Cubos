@@ -360,13 +360,10 @@ public class Tablero : MonoBehaviour {
                 {
                     //Si ese cubo puede fusionarse con el cubo de primeralinea[i] 
                     //Caso 1. Caso 2
-                                        
-                    if ((fila[i].GetComponent<Cubo>().tipocubo +
-                       fila[i - 1].GetComponent<Cubo>().tipocubo == 3)
-                       || ((fila[i].GetComponent<Cubo>().tipocubo +
-                       fila[i - 1].GetComponent<Cubo>().tipocubo > 4)
-                        && (fila[i].GetComponent<Cubo>().tipocubo ==
-                        fila[i - 1].GetComponent<Cubo>().tipocubo)))
+
+                    if (cuboSumaConCuboTres(fila[i].GetComponent<Cubo>(), fila[i - 1].GetComponent<Cubo>())
+                        || cubosSumanMasDeCuatro(fila[i].GetComponent<Cubo>(), fila[i - 1].GetComponent<Cubo>()) 
+                        && cubosSonIguales(fila[i].GetComponent<Cubo>(), fila[i - 1].GetComponent<Cubo>()))                        
                     {
 
                         //Obtenemos el valor del cubo que vamos a crear
@@ -487,9 +484,7 @@ public class Tablero : MonoBehaviour {
         }
     }
     
-
-
-
+    
     //Movimiento de derecha a izquierda usando getValorNuevoCubo
     public void movimientoIzquierda(GameObject[] fila, Vector2[] filaposiciones)
     {
@@ -503,16 +498,13 @@ public class Tablero : MonoBehaviour {
                 //Si (i+1) no es mayor que tres
                 //Si en primeralinea[i+1] también hay un cubo
                 if ((i + 1 <= 3) && fila[i + 1] != null)
-                {                    
+                {
                     //Si ese cubo puede fusionarse con el cubo de primeralinea[i] 
                     //Caso 1. Caso 2: Uno de los cubos es un 1 y otro de los cubos es un 2
-                    if ((fila[i].GetComponent<Cubo>().tipocubo +
-                       fila[i + 1].GetComponent<Cubo>().tipocubo == 3)
-                       || ((fila[i].GetComponent<Cubo>().tipocubo +
-                       fila[i + 1].GetComponent<Cubo>().tipocubo > 4)
-                        && (fila[i].GetComponent<Cubo>().tipocubo ==
-                        fila[i + 1].GetComponent<Cubo>().tipocubo)))
 
+                    if (cuboSumaConCuboTres(fila[i].GetComponent<Cubo>(), fila[i + 1].GetComponent<Cubo>())
+                        || cubosSumanMasDeCuatro(fila[i].GetComponent<Cubo>(), fila[i + 1].GetComponent<Cubo>())
+                        && cubosSonIguales(fila[i].GetComponent<Cubo>(), fila[i + 1].GetComponent<Cubo>()))
 
                     {
                         //Obtenemos el valor del cubo que vamos a crear
@@ -624,12 +616,12 @@ public class Tablero : MonoBehaviour {
                 {
                     //Si ese cubo de la misma columna pero de una línea superior puede fusionarse:
                     //Caso 1\Caso 2: Uno de los cubos es un 1 y otro de los cubos es un 2
-                    if ((matrizFilas[i][numcolumna].GetComponent<Cubo>().tipocubo +
-                       matrizFilas[i + 1][numcolumna].GetComponent<Cubo>().tipocubo == 3)
-                        ||((matrizFilas[i][numcolumna].GetComponent<Cubo>().tipocubo +
-                        matrizFilas[i + 1][numcolumna].GetComponent<Cubo>().tipocubo > 4)
-                         && (matrizFilas[i][numcolumna].GetComponent<Cubo>().tipocubo ==
-                         matrizFilas[i + 1][numcolumna].GetComponent<Cubo>().tipocubo)))
+
+
+                    if (cuboSumaConCuboTres(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i + 1][numcolumna].GetComponent<Cubo>())
+                        || cubosSumanMasDeCuatro(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i + 1][numcolumna].GetComponent<Cubo>())
+                        && cubosSonIguales(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i + 1][numcolumna].GetComponent<Cubo>()))
+                        
                     {
                         //Obtenemos el valor del cubo que vamos a crear
                         int valorcubo = getValorNuevoCubo(matrizFilas[i][numcolumna], matrizFilas[i + 1][numcolumna]);
@@ -744,12 +736,12 @@ public class Tablero : MonoBehaviour {
                 {
                     //Si ese cubo de la misma columna pero de una línea inferior puede fusionarse:
                     //Caso 1: Uno de los cubos es un 1 y otro de los cubos es un 2
-                    if ((matrizFilas[i][numcolumna].GetComponent<Cubo>().tipocubo +
-                       matrizFilas[i - 1][numcolumna].GetComponent<Cubo>().tipocubo == 3)||
-                       ((matrizFilas[i][numcolumna].GetComponent<Cubo>().tipocubo +
-                       matrizFilas[i - 1][numcolumna].GetComponent<Cubo>().tipocubo > 4)
-                        && (matrizFilas[i][numcolumna].GetComponent<Cubo>().tipocubo ==
-                        matrizFilas[i - 1][numcolumna].GetComponent<Cubo>().tipocubo)))
+
+
+                    if (cuboSumaConCuboTres(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i - 1][numcolumna].GetComponent<Cubo>())
+                        || cubosSumanMasDeCuatro(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i - 1][numcolumna].GetComponent<Cubo>())
+                        && cubosSonIguales(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i - 1][numcolumna].GetComponent<Cubo>()))
+
                     {
                        
                         //Obtenemos el valor del cubo que vamos a crear
@@ -850,7 +842,25 @@ public class Tablero : MonoBehaviour {
             }
         }
     }
-    
+
+
+    public bool cuboSumaConCuboTres(Cubo cubo, Cubo cubo2)
+    {
+        return cubo.GetComponent<Cubo>().tipocubo + cubo2.GetComponent<Cubo>().tipocubo == 3;
+    }
+
+    public bool cubosSumanMasDeCuatro(Cubo cubo, Cubo cubo2)
+    {
+        return cubo.GetComponent<Cubo>().tipocubo + cubo2.GetComponent<Cubo>().tipocubo > 4;
+    }
+
+    public bool cubosSonIguales(Cubo cubo, Cubo cubo2)
+    {
+        return cubo.GetComponent<Cubo>().tipocubo == cubo2.GetComponent<Cubo>().tipocubo;
+    }
+
+
+
 
     //Prototipo de método
     //Devuelve el cubo que correspondería crear
