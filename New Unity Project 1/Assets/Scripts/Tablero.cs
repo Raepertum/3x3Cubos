@@ -350,121 +350,60 @@ public class Tablero : MonoBehaviour {
 
         for (int i = 3; i >= 0; i--)
         {
-            //Si se encuentra el cubo que vamos a mover
-            if (fila[i] != null)
-            {
-
-                
-
-                //Si (i-1) no es menor que cero
-                //Si en primeralinea[i-1] también hay un cubo
-                if (!estaEnElLimiteIzquierdo(i) && fila[i - 1] != null)
+            if (existeCubo(fila[i]))
+            {   
+                if (!estaEnElLimiteIzquierdo(i) && existeCubo(fila[i - 1]))
                 {
-                    //Si ese cubo puede fusionarse con el cubo de primeralinea[i] 
-                    //Caso 1. Caso 2
 
-                    if (cuboSumaConCuboTres(fila[i].GetComponent<Cubo>(), fila[i - 1].GetComponent<Cubo>())
-                        || cubosSumanMasDeCuatro(fila[i].GetComponent<Cubo>(), fila[i - 1].GetComponent<Cubo>()) 
-                        && cubosSonIguales(fila[i].GetComponent<Cubo>(), fila[i - 1].GetComponent<Cubo>()))                        
+                    if (sonFusionablesPorLaIzquierda(fila[i-1], fila[i]))
+
                     {
-
-                        //Obtenemos el valor del cubo que vamos a crear
                         int valorcubo = getValorNuevoCubo(fila[i], fila[i - 1]);
-
-                        //Hacemos desaparecer el cubo que hay en [i-1]
-
                         destruirCubo(fila[i - 1]);
-
-                        /*Destroy(fila[i - 1]);
-                        fila[i - 1] = null;*/
-
-                        //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
-                        //Primero destruimos el cubo
-
                         destruirCubo(fila[i]);
-
-                        /*
-                        Destroy(fila[i]);
-                        fila[i] = null;*/
-
-
-                        //Luego creamos un cubo en la posición i+1 si es posible
                         if (i + 1 <= 3)
                         {
-                            //Crearíamos un cubo
                             debecrearsecubo = true;
-
-                            //Si no existe otro cubo que impida que se ocupe la posición i+1
                             if (fila[i + 1] == null)
                             {
-                                //Creamos un cubo del tipo correspondiente
                                 crearCubo(filaposiciones[i + 1], fila, i + 1, valorcubo, "movimientoderecha");
-
                             }
-
-                            //Si, por contra, existe otro cubo que bloquea dicha posición:
-
                             else
                             {
-                                //Creamos el cubo
                                 crearCubo(filaposiciones[i], fila, i, valorcubo, "nada");
-                                                                
                             }
                         }
                         else if (i + 1 > 3)
                         {
-                            //Creamos el cubo
                             crearCubo(filaposiciones[i], fila, i, valorcubo, "nada");                                                   
                         }
-
-                        //Actualizamos la puntuación
                         actualizapuntuacion(valorcubo);
-
                     }
-                    
-                    //Caso 3: Hay un cubo a la izquierda pero no son compatibles
-
                     else
                     {
                         if (i < 3)
                         {
-                            //Si el espacio a la derecha está desocupado
                             if (fila[i + 1] == null)
                             {
-                                //Desplazamos el cubo de i a i+1
                                 fila[i].transform.position = (filaposiciones[i + 1]);
-                                //Cambiamos su posición en la matriz
                                 fila[i + 1] = fila[i];
                                 fila[i] = null;
-
-                                //Crearíamos un cubo
                                 debecrearsecubo = true;
                             }                          
-                         }
-                    
+                         }                    
                     }
-
                 }
-
-                //Si en la fila[i-1] no hay un cubo (Si no se cumple la condición de fusión)
                 else
                 {
-                    //Si no está en el extremo del tablero
                     if (i < 3)
                     {
-                        //Si el espacio a la derecha está desocupado
                         if (fila[i + 1] == null)
                         {
-                            //Desplazamos el cubo de i a i+1
                             fila[i].transform.position = (filaposiciones[i + 1]);
-                            //Cambiamos su posición en la matriz
                             fila[i + 1] = fila[i];
                             fila[i] = null;
-                            //Crearíamos un cubo
                             debecrearsecubo = true;
-
                         }
-                        //Si en el espacio a la derecha hay un cubo que no haya podido fusionarse antes
                         else
                         {
                                                      
@@ -473,7 +412,6 @@ public class Tablero : MonoBehaviour {
                     }
                 }
             }
-
             else
             {
                
@@ -889,6 +827,17 @@ public class Tablero : MonoBehaviour {
         return numcolumna - 1 < 0;
     }
 
+    public bool existeCubo(GameObject cubo)
+    {
+        return cubo != null;
+    }
+
+    public bool sonFusionablesPorLaIzquierda(GameObject Cubo1, GameObject Cubo2)
+    {
+        return cuboSumaConCuboTres(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>())
+                        || cubosSumanMasDeCuatro(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>())
+                        && cubosSonIguales(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>());
+    }
 
     //Prototipo de método
     //Devuelve el cubo que correspondería crear
