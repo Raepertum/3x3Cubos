@@ -370,12 +370,22 @@ public class Tablero : MonoBehaviour {
                         int valorcubo = getValorNuevoCubo(fila[i], fila[i - 1]);
 
                         //Hacemos desaparecer el cubo que hay en [i-1]
-                        Destroy(fila[i - 1]);
-                        fila[i - 1] = null;
+
+                        destruirCubo(fila[i - 1]);
+
+                        /*Destroy(fila[i - 1]);
+                        fila[i - 1] = null;*/
+
                         //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
                         //Primero destruimos el cubo
+
+                        destruirCubo(fila[i]);
+
+                        /*
                         Destroy(fila[i]);
-                        fila[i] = null;
+                        fila[i] = null;*/
+
+
                         //Luego creamos un cubo en la posición i+1 si es posible
                         if (i + 1 <= 3)
                         {
@@ -510,12 +520,24 @@ public class Tablero : MonoBehaviour {
                         //Obtenemos el valor del cubo que vamos a crear
                         int valorcubo = getValorNuevoCubo(fila[i], fila[i + 1]);
                         //Hacemos desaparecer el cubo que hay en [i-1]
+
+                        destruirCubo(fila[i + 1]);
+
+                        /*
                         Destroy(fila[i + 1]);
                         fila[i + 1] = null;
+                        */
+
                         //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
                         //Primero destruimos el cubo
+
+                        destruirCubo(fila[i]);
+
+                        /*
                         Destroy(fila[i]);
-                        fila[i] = null;
+                        fila[i] = null;*/
+
+
                         //Luego creamos un cubo en la posición i-1 si es posible
                         if (i - 1 >=0)
                         {
@@ -747,12 +769,22 @@ public class Tablero : MonoBehaviour {
                         //Obtenemos el valor del cubo que vamos a crear
                         int valorcubo = getValorNuevoCubo(matrizFilas[i][numcolumna], matrizFilas[i - 1][numcolumna]);
                         //Hacemos desaparecer el cubo que hay en [i-1]
-                        Destroy(matrizFilas[i - 1][numcolumna]);
-                        matrizFilas[i - 1][numcolumna] = null;
+
+                        destruirCubo(matrizFilas[i - 1][numcolumna]);
+
+                        /*Destroy(matrizFilas[i - 1][numcolumna]);
+                        matrizFilas[i - 1][numcolumna] = null;*/
+
                         //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
                         //Primero destruimos el cubo
+
+                        destruirCubo(matrizFilas[i][numcolumna]);
+
+                        /*
                         Destroy(matrizFilas[i][numcolumna]);
                         matrizFilas[i][numcolumna] = null;
+                        */
+
                         //Luego creamos un cubo en la posición i+1 si es posible
                         if (i + 1 <= 3)
                         {
@@ -857,6 +889,12 @@ public class Tablero : MonoBehaviour {
     public bool cubosSonIguales(Cubo cubo, Cubo cubo2)
     {
         return cubo.GetComponent<Cubo>().tipocubo == cubo2.GetComponent<Cubo>().tipocubo;
+    }
+
+    public void destruirCubo(GameObject cubo)
+    {
+        Destroy(cubo);
+        cubo = null;
     }
 
 
