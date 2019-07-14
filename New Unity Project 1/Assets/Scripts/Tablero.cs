@@ -352,11 +352,13 @@ public class Tablero : MonoBehaviour {
         {
             //Si se encuentra el cubo que vamos a mover
             if (fila[i] != null)
-            {                
+            {
+
+                
 
                 //Si (i-1) no es menor que cero
                 //Si en primeralinea[i-1] también hay un cubo
-                if ((i - 1 >= 0) && fila[i - 1] != null)
+                if (!estaEnElLimiteIzquierdo(i) && fila[i - 1] != null)
                 {
                     //Si ese cubo puede fusionarse con el cubo de primeralinea[i] 
                     //Caso 1. Caso 2
@@ -437,23 +439,9 @@ public class Tablero : MonoBehaviour {
 
                                 //Crearíamos un cubo
                                 debecrearsecubo = true;
-
-                            }
-
-                            else
-                            {
-                             
-
-                            }
-
-                        }
-
-                        else
-                        {
-
-                                                     
-                        }
-
+                            }                          
+                         }
+                    
                     }
 
                 }
@@ -472,7 +460,6 @@ public class Tablero : MonoBehaviour {
                             //Cambiamos su posición en la matriz
                             fila[i + 1] = fila[i];
                             fila[i] = null;
-
                             //Crearíamos un cubo
                             debecrearsecubo = true;
 
@@ -754,7 +741,7 @@ public class Tablero : MonoBehaviour {
             {
                 //Si (i-1) no es menor que cero (i indica número de fila)
                 //Si en la línea de abajo[i-1] también hay un cubo
-                if ((i - 1 >= 0) && matrizFilas[i - 1][numcolumna] != null)
+                if (!estaEnElLimiteIzquierdo(i) && matrizFilas[i - 1][numcolumna] != null)
                 {
                     //Si ese cubo de la misma columna pero de una línea inferior puede fusionarse:
                     //Caso 1: Uno de los cubos es un 1 y otro de los cubos es un 2
@@ -897,7 +884,10 @@ public class Tablero : MonoBehaviour {
         cubo = null;
     }
 
-
+    public bool estaEnElLimiteIzquierdo(int numcolumna)
+    {
+        return numcolumna - 1 < 0;
+    }
 
 
     //Prototipo de método
