@@ -1,1 +1,1 @@
-Esto es una prueba. Esto sigue siendo una prueba.
+Código perteneciente al juego 3x3 cubos. Actualmente refactorizándose.
