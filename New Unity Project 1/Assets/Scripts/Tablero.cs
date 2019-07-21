@@ -342,25 +342,52 @@ public class Tablero : MonoBehaviour {
         }
 }
 
-    
+
     //Código del movimientoDerecha usando getValorNuevoCubo
-    
+
     public void movimientoDerecha(GameObject[] fila, Vector2[] filaposiciones)
     {
 
         for (int i = 3; i >= 0; i--)
         {
-            if (existeCubo(fila[i]))
-            {   
-                if (!estaEnElLimiteIzquierdo(i) && existeCubo(fila[i - 1]))
+
+            if (existeCuboDentroLimiteYPuedeFusionarseConCuboALaIzquierda(fila, i))
+            {
+                if (hayEspacioALaDerecha(fila, i)){
+                    crearCuboALaDerechaTrasFusionConCuboIzquierdaYActualizarPuntuacion(fila, filaposiciones, i);
+                }
+                else
                 {
+                    crearCuboEnPosicionTrasFusionConCuboIzquierdaYActualizarPuntuacion(fila, filaposiciones, i);
+                }
+                debecrearsecubo = true;
+            }
+            else if (existeCuboDentroLimiteQueTieneUnCuboALaIzquierdaPeroNoSonFusionables(fila, i))
+            {
+                if (hayEspacioALaDerecha(fila, i)){
+                    mueveCuboAlaDerecha(fila, filaposiciones, i);
 
-                    if (sonFusionablesPorLaIzquierda(fila[i-1], fila[i]))
+                    debecrearsecubo = true;                    
+                }
+            }
+            else if (existeCuboDentroLimiteQueNoTieneCuboALaIzquierda(fila, i))
+            {
+                if (hayEspacioALaDerecha(fila, i)){
+                    mueveCuboAlaDerecha(fila, filaposiciones, i);
 
-                    {
-                        int valorcubo = getValorNuevoCubo(fila[i], fila[i - 1]);
+                    debecrearsecubo = true;
+                }
+            }
+        }
+    }
+
+
+    /*
+            int valorcubo = getValorNuevoCubo(fila[i], fila[i - 1]);
                         destruirCubo(fila[i - 1]);
                         destruirCubo(fila[i]);
+
+
                         if (i + 1 <= 3)
                         {
                             debecrearsecubo = true;
@@ -378,7 +405,7 @@ public class Tablero : MonoBehaviour {
                             crearCubo(filaposiciones[i], fila, i, valorcubo, "nada");                                                   
                         }
                         actualizapuntuacion(valorcubo);
-                    }
+                    
                     else
                     {
                         if (i < 3)
@@ -392,7 +419,7 @@ public class Tablero : MonoBehaviour {
                             }                          
                          }                    
                     }
-                }
+                
                 else
                 {
                     if (i < 3)
@@ -403,22 +430,10 @@ public class Tablero : MonoBehaviour {
                             fila[i + 1] = fila[i];
                             fila[i] = null;
                             debecrearsecubo = true;
-                        }
-                        else
-                        {
-                                                     
-                        }
+          }
+    */
 
-                    }
-                }
-            }
-            else
-            {
-               
-            }
-        }
-    }
-    
+
     
     //Movimiento de derecha a izquierda usando getValorNuevoCubo
     public void movimientoIzquierda(GameObject[] fila, Vector2[] filaposiciones)
@@ -554,6 +569,8 @@ public class Tablero : MonoBehaviour {
         //El recorrido lo hacemos desde la fila número 0 a la fila número 3
         for (int i = 0; i <= 3; i++)
         {
+
+
             //Si se encuentra el cubo que vamos a mover en cada fila dentro de la columna
             if ((matrizFilas[i])[numcolumna] != null)
             {
@@ -800,6 +817,84 @@ public class Tablero : MonoBehaviour {
         }
     }
 
+    
+    public bool hayEspacioALaDerecha(GameObject[] fila, int numcolumna)
+    {
+        return numcolumna + 1 <= 3;
+    }
+
+    public void crearCuboALaDerechaTrasFusionConCuboIzquierdaYActualizarPuntuacion(GameObject[] fila, Vector2[] filaposiciones, int columna)
+    {
+        int valorcubo = obtenerValorFusionCubosYDestruirlos(fila, columna, columna-1);        
+        crearCubo(filaposiciones[columna + 1], fila, columna + 1, valorcubo, "movimientoderecha");
+        actualizapuntuacion(valorcubo);
+    }
+
+    public int obtenerValorFusionCubosYDestruirlos(GameObject[] fila, int columna, int columnaCuboFusion)
+    {
+        int valorcubo = getValorNuevoCubo(fila[columna], fila[columnaCuboFusion]);
+        destruirCubo(fila[columnaCuboFusion]);
+        destruirCubo(fila[columna]);
+        return valorcubo;
+    }
+
+    public void crearCuboEnPosicionTrasFusionConCuboIzquierdaYActualizarPuntuacion(GameObject[] fila, Vector2[] filaposiciones, int columna)
+    {
+        int valorcubo = obtenerValorFusionCubosYDestruirlos(fila, columna, columna - 1);
+        crearCubo(filaposiciones[columna], fila, columna, valorcubo, "nada");
+        actualizapuntuacion(valorcubo);
+    }
+
+   
+
+    public bool existeCuboDentroLimiteYPuedeFusionarseConCuboALaIzquierda(GameObject[] fila, int numcolumna)
+    {
+        if (numcolumna - 1 < 0) {
+            return false; 
+             }
+        else {
+            GameObject cubo = fila[numcolumna];
+            GameObject cuboALaIzquierda = fila[numcolumna - 1];
+            return (existeCubo(cubo) && !estaEnElLimiteIzquierdo(numcolumna) && existeCubo(cuboALaIzquierda) && sonFusionablesPorLaIzquierda(cuboALaIzquierda, cubo));
+        }
+    }
+
+    public bool existeCuboDentroLimiteQueTieneUnCuboALaIzquierdaPeroNoSonFusionables(GameObject[] fila, int numcolumna)
+    {
+        if (numcolumna - 1 < 0)
+        {
+            return false;
+             }
+        else
+        {
+            GameObject cubo = fila[numcolumna];
+            GameObject cuboALaIzquierda = fila[numcolumna - 1];
+            return (existeCubo(cubo) && !estaEnElLimiteIzquierdo(numcolumna) && existeCubo(cuboALaIzquierda) && !sonFusionablesPorLaIzquierda(cuboALaIzquierda, cubo));
+        }
+    }
+
+    public bool existeCuboDentroLimiteQueNoTieneCuboALaIzquierda(GameObject[] fila, int numcolumna)
+    {
+        if (numcolumna - 1 < 0)
+        {
+            return false;
+             }
+        else
+        {
+            GameObject cubo = fila[numcolumna];
+            GameObject cuboALaIzquierda = fila[numcolumna - 1];
+            return (existeCubo(cubo) && !estaEnElLimiteIzquierdo(numcolumna) && !existeCubo(cuboALaIzquierda));
+        }
+    }
+
+
+    public void mueveCuboAlaDerecha(GameObject[] fila, Vector2[] filaposiciones, int columna)
+    {
+        fila[columna].transform.position = (filaposiciones[columna + 1]);
+        fila[columna + 1] = fila[columna];
+        fila[columna] = null;
+        debecrearsecubo = true;
+    }
 
     public bool cuboSumaConCuboTres(Cubo cubo, Cubo cubo2)
     {
