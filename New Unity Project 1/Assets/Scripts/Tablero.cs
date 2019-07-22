@@ -168,10 +168,9 @@ public class Tablero : MonoBehaviour {
 
         //Creamos 4 cubos en posiciones no aleatorias
 
-        crearCubo(matrizPosiciones[0][0], primeralinea, 0, 1, "Creacion");
-        crearCubo(matrizPosiciones[1][0], segundalinea, 0, 2, "Creacion");
-        crearCubo(matrizPosiciones[2][0], terceralinea, 0, 1, "Creacion");
-        crearCubo(matrizPosiciones[3][0], cuartalinea, 0, 2, "Creacion");
+        crearCubo(matrizPosiciones[0][2], primeralinea, 2, 1, "Creacion");
+        crearCubo(matrizPosiciones[0][3], primeralinea, 3, 2, "Creacion");
+        
 
 
         //Actualizamos la posición inicial
@@ -219,6 +218,9 @@ public class Tablero : MonoBehaviour {
         //Creamos el cubo
         GameObject cubo = Instantiate(CuboPrefab, coordenadas, Quaternion.identity);
         //Lo asignamos a una posición dentro de una de las líneas
+
+        print("Creamos cubo "+tipocubo+" en la línea "+linea+" en la posición "+posicion);
+
         linea[posicion] = cubo;
         //Establecemos el tipo de cubo que es
         cubo.GetComponent<Cubo>().tipocubo = tipocubo;
@@ -363,10 +365,8 @@ public class Tablero : MonoBehaviour {
 
     public void movimientoDerecha(GameObject[] fila, Vector2[] filaposiciones)
     {
-
         for (int i = 3; i >= 0; i--)
         {
-
             if (existeCuboDentroLimiteYPuedeFusionarseConCuboALaIzquierda(fila, i))
             {
                 print("Existe cubo dentro del límite y puede fusionarse con el cubo que tiene a la izquierda");
@@ -388,7 +388,7 @@ public class Tablero : MonoBehaviour {
                     print("Hay espacio a la derecha");
                     mueveCuboAlaDerecha(fila, filaposiciones, i);
                     debecrearsecubo = true;                    
-                }
+                }                
             }
             else if (elCuboExisteYEstaEnLaPrimeraColumna(fila, i)){
                 print("El cubo está en la primera columna");
@@ -402,6 +402,8 @@ public class Tablero : MonoBehaviour {
             else if (existeCuboDentroLimiteQueNoTieneCuboALaIzquierda(fila, i))
             {
                 print("Existe un cubo dentro del límite que no tiene un cubo a la izquierda");
+                print("Se trata de un cubo en la posición "+i);
+
                 if (hayEspacioALaDerecha(fila, i)){
                     print("Hay espacio a la derecha");
                     mueveCuboAlaDerecha(fila, filaposiciones, i);
@@ -437,7 +439,7 @@ public class Tablero : MonoBehaviour {
                         int valorcubo = getValorNuevoCubo(fila[i], fila[i + 1]);
                         //Hacemos desaparecer el cubo que hay en [i-1]
 
-                        destruirCubo(fila[i + 1]);
+                        destruirCubo(fila, i + 1);
 
                         /*
                         Destroy(fila[i + 1]);
@@ -447,7 +449,7 @@ public class Tablero : MonoBehaviour {
                         //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
                         //Primero destruimos el cubo
 
-                        destruirCubo(fila[i]);
+                        destruirCubo(fila, i);
 
                         /*
                         Destroy(fila[i]);
@@ -688,7 +690,7 @@ public class Tablero : MonoBehaviour {
                         int valorcubo = getValorNuevoCubo(matrizFilas[i][numcolumna], matrizFilas[i - 1][numcolumna]);
                         //Hacemos desaparecer el cubo que hay en [i-1]
 
-                        destruirCubo(matrizFilas[i - 1][numcolumna]);
+                        destruirCubo(matrizFilas[i - 1], numcolumna);
 
                         /*Destroy(matrizFilas[i - 1][numcolumna]);
                         matrizFilas[i - 1][numcolumna] = null;*/
@@ -696,7 +698,7 @@ public class Tablero : MonoBehaviour {
                         //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
                         //Primero destruimos el cubo
 
-                        destruirCubo(matrizFilas[i][numcolumna]);
+                        destruirCubo(matrizFilas[i], numcolumna);
 
                         /*
                         Destroy(matrizFilas[i][numcolumna]);
@@ -796,12 +798,13 @@ public class Tablero : MonoBehaviour {
     
     public bool hayEspacioALaDerecha(GameObject[] fila, int numcolumna)
     {
-        return numcolumna + 1 <= 3;
+        if (numcolumna + 1 > 3) { return false; }
+        else return fila[numcolumna + 1] == null;
     }
 
     public void crearCuboALaDerechaTrasFusionConCuboIzquierdaYActualizarPuntuacion(GameObject[] fila, Vector2[] filaposiciones, int columna)
     {
-        int valorcubo = obtenerValorFusionCubosYDestruirlos(fila, columna, columna-1);        
+        int valorcubo = obtenerValorFusionCubosYDestruirlos(fila, columna, columna-1);
         crearCubo(filaposiciones[columna + 1], fila, columna + 1, valorcubo, "movimientoderecha");
         actualizapuntuacion(valorcubo);
     }
@@ -809,15 +812,19 @@ public class Tablero : MonoBehaviour {
     public int obtenerValorFusionCubosYDestruirlos(GameObject[] fila, int columna, int columnaCuboFusion)
     {
         int valorcubo = getValorNuevoCubo(fila[columna], fila[columnaCuboFusion]);
-        destruirCubo(fila[columnaCuboFusion]);
-        destruirCubo(fila[columna]);
+        destruirCubo(fila, columnaCuboFusion);
+        destruirCubo(fila, columna);
         return valorcubo;
     }
 
     public void crearCuboEnPosicionTrasFusionConCuboIzquierdaYActualizarPuntuacion(GameObject[] fila, Vector2[] filaposiciones, int columna)
     {
         int valorcubo = obtenerValorFusionCubosYDestruirlos(fila, columna, columna - 1);
+
+        print("Vamos a crear un cubo en la columna " + columna + " en la fila " + fila + " con el valor " + valorcubo);
+
         crearCubo(filaposiciones[columna], fila, columna, valorcubo, "nada");
+
         actualizapuntuacion(valorcubo);
     }
 
@@ -869,10 +876,14 @@ public class Tablero : MonoBehaviour {
     }
 
 
+
+    //Hay que seguir trabajando en este método
+    //**********************************************************
+
     public void mueveCuboAlaDerecha(GameObject[] fila, Vector2[] filaposiciones, int columna)
     {
 
-        Hay que seguir trabajando en este método
+        
 
         float difX = (fila[columna].transform.position.x - (filaposiciones[columna + 1]).x);
         float fracciondifX = difX / 100;
@@ -916,10 +927,10 @@ public class Tablero : MonoBehaviour {
         return cubo.GetComponent<Cubo>().tipocubo == cubo2.GetComponent<Cubo>().tipocubo;
     }
 
-    public void destruirCubo(GameObject cubo)
+    public void destruirCubo(GameObject[] fila, int columna)
     {
-        Destroy(cubo);
-        cubo = null;
+        Destroy(fila[columna]);
+        fila[columna] = null;
     }
 
     public bool estaEnElLimiteIzquierdo(int numcolumna)
