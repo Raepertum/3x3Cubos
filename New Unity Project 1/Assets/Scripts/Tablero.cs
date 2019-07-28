@@ -416,7 +416,6 @@ public class Tablero : MonoBehaviour {
         {
             if (existeCuboDentroLimiteYPuedeFusionarseConCuboALaDerecha(fila, i))
             {
-                print("Existe cubo dentro del límite y puede fusionarse con el cubo que tiene a la derecha");
                 if (hayEspacioALaIzquierda(fila, i))
                 {
                     crearCuboALaIzquierdaTrasFusionConCuboDerechaYActualizarPuntuacion(fila, filaposiciones, i);                    
@@ -441,13 +440,11 @@ public class Tablero : MonoBehaviour {
             {
                 
                 if (hayEspacioALaIzquierda(fila, i))
-                {
-                    
+                {                    
                     mueveCuboAlaIzquierda(fila, filaposiciones, i);
                     debecrearsecubo = true;
                 }
             }
-
             else if (existeCuboDentroLimiteQueNoTieneCuboALaDerecha(fila, i))
             {                
                 if (hayEspacioALaIzquierda(fila, i))
@@ -736,12 +733,22 @@ public class Tablero : MonoBehaviour {
         return valorcubo;
     }
 
+
+    //POSIBLE FUSIONABLE
+    public void crearCuboEnPosicionTrasFusionConCuboDerechaYActualizarPuntuacion(GameObject[] fila, Vector2[] filaposiciones, int columna)
+    {
+        int valorcubo = obtenerValorFusionCubosYDestruirlos(fila, columna, columna + 1);
+
+        crearCubo(filaposiciones[columna], fila, columna, valorcubo, "nada");
+
+        actualizapuntuacion(valorcubo);
+    }
+    /**/
+
     public void crearCuboEnPosicionTrasFusionConCuboIzquierdaYActualizarPuntuacion(GameObject[] fila, Vector2[] filaposiciones, int columna)
     {
         int valorcubo = obtenerValorFusionCubosYDestruirlos(fila, columna, columna - 1);
-
-        print("Vamos a crear un cubo en la columna " + columna + " en la fila " + fila + " con el valor " + valorcubo);
-
+        
         crearCubo(filaposiciones[columna], fila, columna, valorcubo, "nada");
 
         actualizapuntuacion(valorcubo);
@@ -757,7 +764,7 @@ public class Tablero : MonoBehaviour {
         else {
             GameObject cubo = fila[numcolumna];
             GameObject cuboALaIzquierda = fila[numcolumna - 1];
-            return (existeCubo(cubo) && !estaEnElLimiteIzquierdo(numcolumna) && existeCubo(cuboALaIzquierda) && sonFusionablesPorLaIzquierda(cuboALaIzquierda, cubo));
+            return (existeCubo(cubo) && !estaEnElLimiteIzquierdo(numcolumna) && existeCubo(cuboALaIzquierda) && sonFusionables(cuboALaIzquierda, cubo));
         }
     }
 
@@ -772,7 +779,7 @@ public class Tablero : MonoBehaviour {
         {
             GameObject cubo = fila[numcolumna];
             GameObject cuboALaIzquierda = fila[numcolumna - 1];
-            return (existeCubo(cubo) && !estaEnElLimiteIzquierdo(numcolumna) && existeCubo(cuboALaIzquierda) && !sonFusionablesPorLaIzquierda(cuboALaIzquierda, cubo));
+            return (existeCubo(cubo) && !estaEnElLimiteIzquierdo(numcolumna) && existeCubo(cuboALaIzquierda) && !sonFusionables(cuboALaIzquierda, cubo));
         }
     }
 
@@ -809,16 +816,7 @@ public class Tablero : MonoBehaviour {
         actualizapuntuacion(valorcubo);
     }
 
-    //POSIBLE FUSIONABLE
-    public void crearCuboEnPosicionTrasFusionConCuboDerechaYActualizarPuntuacion(GameObject[] fila, Vector2[] filaposiciones, int columna)
-    {
-        int valorcubo = obtenerValorFusionCubosYDestruirlos(fila, columna, columna + 1);
-        
-        crearCubo(filaposiciones[columna], fila, columna, valorcubo, "nada");
-
-        actualizapuntuacion(valorcubo);
-    }
-    /**/
+    
 
     public bool existeCuboDentroLimiteYPuedeFusionarseConCuboALaDerecha(GameObject[] fila, int numcolumna)
 {
@@ -830,7 +828,7 @@ public class Tablero : MonoBehaviour {
     {
         GameObject cubo = fila[numcolumna];
         GameObject cuboALaDerecha = fila[numcolumna + 1];
-        return (existeCubo(cubo) && !estaEnElLimiteDerecho(numcolumna) && existeCubo(cuboALaDerecha) && sonFusionablesPorLaDerecha(cuboALaDerecha, cubo));
+        return (existeCubo(cubo) && !estaEnElLimiteDerecho(numcolumna) && existeCubo(cuboALaDerecha) && sonFusionables(cuboALaDerecha, cubo));
     }
 }
     public bool existeCuboDentroLimiteQueTieneUnCuboALaDerechaPeroNoSonFusionables(GameObject[] fila, int numcolumna)
@@ -844,7 +842,7 @@ public class Tablero : MonoBehaviour {
         {
             GameObject cubo = fila[numcolumna];
             GameObject cuboALaDerecha = fila[numcolumna + 1];
-            return (existeCubo(cubo) && !estaEnElLimiteDerecho(numcolumna) && existeCubo(cuboALaDerecha) && !sonFusionablesPorLaDerecha(cuboALaDerecha, cubo));
+            return (existeCubo(cubo) && !estaEnElLimiteDerecho(numcolumna) && existeCubo(cuboALaDerecha) && !sonFusionables(cuboALaDerecha, cubo));
         }
     }
 
@@ -945,22 +943,15 @@ public class Tablero : MonoBehaviour {
     {
         return cubo != null;
     }
-
-    public bool sonFusionablesPorLaIzquierda(GameObject Cubo1, GameObject Cubo2)
+    
+    public bool sonFusionables(GameObject Cubo1, GameObject Cubo2)
     {
         return cuboSumaConCuboTres(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>())
                         || cubosSumanMasDeCuatro(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>())
                         && cubosSonIguales(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>());
     }
-
-    //MUY CANDIDATO A FUSIONARSE
-    public bool sonFusionablesPorLaDerecha(GameObject Cubo1, GameObject Cubo2)
-    {
-        return cuboSumaConCuboTres(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>())
-                        || cubosSumanMasDeCuatro(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>())
-                        && cubosSonIguales(Cubo1.GetComponent<Cubo>(), Cubo2.GetComponent<Cubo>());
-    }
-    /**/
+    
+       
 
     //Prototipo de método
     //Devuelve el cubo que correspondería crear
