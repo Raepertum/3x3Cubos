@@ -869,6 +869,7 @@ public class Tablero : MonoBehaviour {
 
     public void mueveCuboAlaIzquierda(GameObject[] fila, Vector2[] filaposiciones, int columna)
     {
+        fila[columna].transform.position = (filaposiciones[columna - 1]);
         fila[columna - 1] = fila[columna];
         fila[columna] = null;
         debecrearsecubo = true;
