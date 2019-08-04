@@ -19,6 +19,8 @@ public class Tablero : MonoBehaviour {
     */
     //Prototipo del cubo
     public GameObject CuboPrefab;
+    //Los datos del tablero
+    public DatosTablero datosTablero;
     //Prototipo del mensaje
     public GameObject mensajeDerrota;
 
@@ -28,9 +30,11 @@ public class Tablero : MonoBehaviour {
 
     //La posición inicial del mensaje
     Vector3 posinicialmensaje = new Vector3(0.5f,0.5f,0);
-        
+
 
     //Matriz de coordenadas
+
+    
     Vector2[] posprimeralinea = {new Vector3(-2.5f, 2.53f),new Vector3(-0.86f, 2.53f),
                                  new Vector3(0.86f, 2.53f),new Vector3(2.53f, 2.53f)};
     Vector2[] possegundalinea = {new Vector3(-2.5f, 0.86f),new Vector3(-0.86f, 0.86f),
@@ -39,18 +43,25 @@ public class Tablero : MonoBehaviour {
                                  new Vector3(0.86f, -0.80f),new Vector3(2.53f, -0.80f)};
     Vector2[] poscuartalinea = {new Vector3(-2.5f, -2.50f),new Vector3(-0.86f, -2.50f),
                                  new Vector3(0.86f, -2.50f),new Vector3(2.53f, -2.50f)};
-
+    
     //Matriz de las posiciones 
+
+    
     Vector2[][] matrizPosiciones = new Vector2[4][];
+    
 
     //Matriz de los cubos: Cada una de las filas de la matriz
+    
     GameObject[] primeralinea = new GameObject[4];
     GameObject[] segundalinea = new GameObject[4];
     GameObject[] terceralinea = new GameObject[4];
     GameObject[] cuartalinea = new GameObject[4];
+    
 
     //Matriz de todas las filas
+    
     GameObject[][] matrizFilas = new GameObject[4][];
+    
 
     //¿Debe crearse un nuevo cubo en una posicion aleatoria?
     bool debecrearsecubo = true;
@@ -150,8 +161,7 @@ public class Tablero : MonoBehaviour {
         matrizFilas[3] = cuartalinea;
 
         cargaSprites();
-
-        
+              
 
         //Las booleanas que se utilizan para marcar los principios y los finales de las animaciones
         animacioncreacionpendiente = false;
@@ -455,8 +465,58 @@ public class Tablero : MonoBehaviour {
             }
         }
     }
-    
-        
+
+    //El futuro movimiento arriba
+
+    /*
+    public void movimientoArriba(GameObject[] columna, Vector2[] columnaposiciones)
+    {
+        for (int i = 0; i <= 3; i++)
+        {
+            if (existeCuboDentroLimiteYPuedeFusionarseConCuboAbajo(columna, i))
+            {
+                if (hayEspacioArriba(columna, i))
+                {
+                    crearCuboArribaTrasFusionConCuboAbajoYActualizarPuntuacion(columna, columnaposiciones, i);
+                }
+                else
+                {
+                    crearCuboEnPosicionTrasFusionConCuboAbajoYActualizarPuntuacion(columna, columnaposiciones, i);
+                }
+                debecrearsecubo = true;
+            }
+            else if (existeCuboDentroLimiteQueTieneUnCuboAbajoPeroNoSonFusionables(columna, i))
+            {
+
+                if (hayEspacioAbajo(columna, i))
+                {
+
+                    mueveCuboArriba(columna, columnaposiciones, i);
+                    debecrearsecubo = true;
+                }
+            }
+            else if (elCuboExisteYEstaEnLaUltimaFila(columna, i))
+            {
+
+                if (hayEspacioArriba(columna, i))
+                {
+                    mueveCuboArriba(columna, columnaposiciones, i);
+                    debecrearsecubo = true;
+                }
+            }
+            else if (existeCuboDentroLimiteQueNoTieneCuboAbajo(columna, i))
+            {
+                if (hayEspacioArriba(columna, i))
+                {
+                    mueveCuboArriba(columna, columnaposiciones, i);
+                    debecrearsecubo = true;
+                }
+            }
+        }
+    }
+    */
+
+
     //Movimiento de abajo arriba usando getValorCubo
     public void movimientoArriba(int numcolumna)
     {
@@ -995,11 +1055,24 @@ public class Tablero : MonoBehaviour {
             //Detecta el movimiento a la derecha
             if (Input.GetKeyDown(KeyCode.D))
             {
+
+                //Tenemos que modificar todos estos métodos y también el que comprueba que se ha terminado para tener en cuenta DatosTablero
+
+
                 //Movemos
+
+                movimientoDerecha(datosTablero.getFila(0), datosTablero.getFilaCoordenadas(0));
+                movimientoDerecha(datosTablero.getFila(1), datosTablero.getFilaCoordenadas(1));
+                movimientoDerecha(datosTablero.getFila(2), datosTablero.getFilaCoordenadas(2));
+                movimientoDerecha(datosTablero.getFila(3), datosTablero.getFilaCoordenadas(3));
+
+                /*
                 movimientoDerecha(matrizFilas[0], posprimeralinea);
                 movimientoDerecha(matrizFilas[1], possegundalinea);
                 movimientoDerecha(matrizFilas[2], posterceralinea);
                 movimientoDerecha(matrizFilas[3], poscuartalinea);
+                */
+
 
                 //Creamos cubo si corresponde
                 if (debecrearsecubo)
