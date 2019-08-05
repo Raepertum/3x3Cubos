@@ -34,7 +34,7 @@ public class Tablero : MonoBehaviour {
 
     //Matriz de coordenadas
 
-    
+    /*
     Vector2[] posprimeralinea = {new Vector3(-2.5f, 2.53f),new Vector3(-0.86f, 2.53f),
                                  new Vector3(0.86f, 2.53f),new Vector3(2.53f, 2.53f)};
     Vector2[] possegundalinea = {new Vector3(-2.5f, 0.86f),new Vector3(-0.86f, 0.86f),
@@ -43,20 +43,21 @@ public class Tablero : MonoBehaviour {
                                  new Vector3(0.86f, -0.80f),new Vector3(2.53f, -0.80f)};
     Vector2[] poscuartalinea = {new Vector3(-2.5f, -2.50f),new Vector3(-0.86f, -2.50f),
                                  new Vector3(0.86f, -2.50f),new Vector3(2.53f, -2.50f)};
-    
+    */
     //Matriz de las posiciones 
 
-    
+    /*
     Vector2[][] matrizPosiciones = new Vector2[4][];
-    
+    */
 
     //Matriz de los cubos: Cada una de las filas de la matriz
     
+    /*
     GameObject[] primeralinea = new GameObject[4];
     GameObject[] segundalinea = new GameObject[4];
     GameObject[] terceralinea = new GameObject[4];
     GameObject[] cuartalinea = new GameObject[4];
-    
+    */
 
     //Matriz de todas las filas
     
@@ -149,16 +150,22 @@ public class Tablero : MonoBehaviour {
 
 
         //Cada fila de la matriz de posiciones es una fila de posiciones
+
+        /*
         matrizPosiciones[0] = posprimeralinea;
         matrizPosiciones[1] = possegundalinea;
         matrizPosiciones[2] = posterceralinea;
         matrizPosiciones[3] = poscuartalinea;
+        */
 
         //Cada fila de la matriz de filas es una fila
+
+        /*
         matrizFilas[0] = primeralinea;
         matrizFilas[1] = segundalinea;
         matrizFilas[2] = terceralinea;
         matrizFilas[3] = cuartalinea;
+        */
 
         cargaSprites();
               
@@ -328,7 +335,6 @@ public class Tablero : MonoBehaviour {
     }
 
    
-
     public void generarCuboPosicionAleatoria()
     {
         //Número línea aleatorio
@@ -336,14 +342,14 @@ public class Tablero : MonoBehaviour {
         //Número columna aleatorio
         int numcolumnaaleatorio = UnityEngine.Random.Range(0,4);
         //Si la posición está ocupada, se vuelve a llamar a la función
-        if (matrizFilas[numfilaaleatorio][numcolumnaaleatorio]!=null){
+        if (!datosTablero.esPosicionVacia(numfilaaleatorio, numcolumnaaleatorio)){
             generarCuboPosicionAleatoria();
         }
         //Si la posición no está ocupada, se crea el cubo y se actualiza el valor de cuboacrear
         else
         {
             //Calculamos las coordenadas
-            Vector2 coordenadas = matrizPosiciones[numfilaaleatorio][numcolumnaaleatorio];
+            Vector2 coordenadas = datosTablero.getCoordenadas(numfilaaleatorio, numcolumnaaleatorio);
                         
             //Ponemos la bandera para que no se avance
             animacioncreacionpendiente = true;

@@ -66,6 +66,8 @@ public class DatosTablero : MonoBehaviour
     {
         return matrizPosiciones[numfila];
     }
-
+    public bool esPosicionVacia(int fila, int columna) {
+        return (matrizFilas[fila][columna] == null);
+    }
 
 }
