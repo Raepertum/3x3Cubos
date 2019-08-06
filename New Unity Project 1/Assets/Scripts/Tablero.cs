@@ -61,7 +61,7 @@ public class Tablero : MonoBehaviour {
 
     //Matriz de todas las filas
     
-    GameObject[][] matrizFilas = new GameObject[4][];
+    //GameObject[][] matrizFilas = new GameObject[4][];
     
 
     //¿Debe crearse un nuevo cubo en una posicion aleatoria?
@@ -185,10 +185,8 @@ public class Tablero : MonoBehaviour {
 
         //Creamos 4 cubos en posiciones no aleatorias
 
-        crearCubo(matrizPosiciones[0][2], primeralinea, 2, 1, "Creacion");
-        crearCubo(matrizPosiciones[0][3], primeralinea, 3, 2, "Creacion");
-        
-
+        crearCubo(0, 2, 1, "Creacion");
+        crearCubo(0, 3, 2, "Creacion");
 
         //Actualizamos la posición inicial
         actualizapuntuacion(0);
@@ -229,22 +227,26 @@ public class Tablero : MonoBehaviour {
 
 
     //Crea un cubo de unas determinadas características en una posición determinada
-    private void crearCubo(Vector2 coordenadas, GameObject[] linea, int posicion, int tipocubo, string tipoanimacion)
+    private void crearCubo(int numfila, int numcolumna, int tipocubo, string tipoanimacion)
     {
-        
+
+        //(Vector2 coordenadas, GameObject[] linea, int posicion, int tipocubo, string tipoanimacion)
+        //Las coordenadas del cubo la podemos obtener de DatosTablero a través del número de fila y de la columna
+        //La línea la podemos sacar a través del número de línea
+        //El número de columna como parámetro
+        //El tipo de cubo
+
+
+        Vector2 coordenadas = datosTablero.getCoordenadas(numfila, numcolumna);
         //Creamos el cubo
         GameObject cubo = Instantiate(CuboPrefab, coordenadas, Quaternion.identity);
         //Lo asignamos a una posición dentro de una de las líneas
 
-        print("Creamos cubo "+tipocubo+" en la línea "+linea+" en la posición "+posicion);
-
-        linea[posicion] = cubo;
+        datosTablero.llenarPosicion(cubo, numfila, numcolumna);
+        
         //Establecemos el tipo de cubo que es
         cubo.GetComponent<Cubo>().tipocubo = tipocubo;
-
-
-        print("Creamos el cubo tipo" + tipocubo);
-
+        
 
         //Establecemos la imagen del cubo:
         switch (tipocubo) {
@@ -354,8 +356,8 @@ public class Tablero : MonoBehaviour {
             //Ponemos la bandera para que no se avance
             animacioncreacionpendiente = true;
             //Creamos el cubo y animamos su generación
-            crearCubo(coordenadas, matrizFilas[numfilaaleatorio], numcolumnaaleatorio, cuboacrear, "generacion");
-
+            crearCubo(numfilaaleatorio, numcolumnaaleatorio, cuboacrear, "Creacion");
+            
             //Mientras haya una animación pendiente
             
             /*
@@ -532,11 +534,11 @@ public class Tablero : MonoBehaviour {
 
 
             //Si se encuentra el cubo que vamos a mover en cada fila dentro de la columna
-            if ((matrizFilas[i])[numcolumna] != null)
+            if (!datosTablero.esPosicionVacia(i,numcolumna))
             {
                 //Si (i+1) no es mayor que tres (i indica número de fila)
                 //Si en la línea de arriba[i+1] también hay un cubo
-                if ((i + 1 <= 3) && matrizFilas[i + 1][numcolumna] != null)
+                if ((i + 1 <= 3) && (!datosTablero.esPosicionVacia(i+1, numcolumna)))
                 {
                     //Si ese cubo de la misma columna pero de una línea superior puede fusionarse:
                     //Caso 1\Caso 2: Uno de los cubos es un 1 y otro de los cubos es un 2
@@ -566,7 +568,7 @@ public class Tablero : MonoBehaviour {
                             if (matrizFilas[i - 1][numcolumna] == null)
                             {
                                 //Creamos el cubo 3
-                                crearCubo(matrizPosiciones[i - 1][numcolumna], matrizFilas[i - 1], numcolumna, valorcubo, "movimientoarriba");
+                                crearCubo(i-1, numcolumna, valorcubo, "MovimientoArriba");
 
                             }
 
@@ -574,15 +576,14 @@ public class Tablero : MonoBehaviour {
                             else
                             {
                                 //Creamos el cubo 3
-                                crearCubo(matrizPosiciones[i][numcolumna], matrizFilas[i], numcolumna, valorcubo, "nada");
-
+                                crearCubo(i, numcolumna, valorcubo, "Nada");                                
                             }
 
                         }
                         else if (i - 1 < 0)
                         {
                             //Creamos el cubo 3
-                            crearCubo(matrizPosiciones[i][numcolumna], matrizFilas[i], numcolumna, valorcubo, "nada");
+                            crearCubo(i, numcolumna, valorcubo, "Nada");                           
 
                         }
                         //Actualizamos la puntuación
@@ -601,7 +602,7 @@ public class Tablero : MonoBehaviour {
                             if (matrizFilas[i - 1][numcolumna] == null)
                             {
                                 //Desplazamos el cubo de i a i-1
-                                matrizFilas[i][numcolumna].transform.position = (matrizPosiciones[i - 1][numcolumna]);
+                                matrizFilas[i][numcolumna].transform.position = datosTablero.getCoordenadas(i-1, numcolumna);
                                 //Cambiamos su posición en la matriz
                                 matrizFilas[i - 1][numcolumna] = matrizFilas[i][numcolumna];
                                 matrizFilas[i][numcolumna] = null;
@@ -625,6 +626,9 @@ public class Tablero : MonoBehaviour {
                         {
                             
                             //Desplazamos el cubo de i a i-1
+
+
+
                             matrizFilas[i][numcolumna].transform.position = (matrizPosiciones[i - 1][numcolumna]);
                             //Cambiamos su posición en la matriz
                             matrizFilas[i - 1][numcolumna] = matrizFilas[i][numcolumna];
@@ -1312,7 +1316,7 @@ public class Tablero : MonoBehaviour {
         {
             for(int j=0; j<=3; j++)
             {
-                if (matrizFilas[i][j] == null)
+                if (datosTablero.esPosicionVacia(i,j))
                 {
                     return false;
                 }

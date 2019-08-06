@@ -69,5 +69,8 @@ public class DatosTablero : MonoBehaviour
     public bool esPosicionVacia(int fila, int columna) {
         return (matrizFilas[fila][columna] == null);
     }
-
+    public void llenarPosicion(GameObject cubo, int numfila, int numcolumna)
+    {
+        matrizFilas[numfila][numcolumna] = cubo;
+    }
 }
