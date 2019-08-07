@@ -73,4 +73,9 @@ public class DatosTablero : MonoBehaviour
     {
         matrizFilas[numfila][numcolumna] = cubo;
     }
+    public void destruirCubo(int fila, int columna)
+    {
+        Destroy(matrizFilas[fila][columna]);
+        matrizFilas[fila][columna] = null;
+    }
 }

@@ -796,7 +796,7 @@ public class Tablero : MonoBehaviour {
         actualizapuntuacion(valorcubo);
     }
 
-    public int obtenerValorFusionCubosYDestruirlos(GameObject[] fila, int columna, int columnaCuboFusion)
+    public int obtenerValorFusionCubosYDestruirlos(int fila, int columna, int columnaCuboFusion)
     {
         int valorcubo = getValorNuevoCubo(fila[columna], fila[columnaCuboFusion]);
         destruirCubo(fila, columnaCuboFusion);
@@ -1410,8 +1410,7 @@ public class Tablero : MonoBehaviour {
         {
             for(int j=0; j<=3; j++)
             {
-                Destroy(matrizFilas[i][j]);
-                matrizFilas[i][j] = null;
+                datosTablero.destruirCubo(i, j);               
             }
         }
         //Añadimos los dos primeros cubos
