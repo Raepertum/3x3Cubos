@@ -552,11 +552,11 @@ public class Tablero : MonoBehaviour {
                         //Obtenemos el valor del cubo que vamos a crear
                         int valorcubo = getValorNuevoCubo(matrizFilas[i][numcolumna], matrizFilas[i + 1][numcolumna]);
                         //Hacemos desaparecer el cubo que hay en [i-1]
-                        Destroy(matrizFilas[i + 1][numcolumna]);
+                        datosTablero.destruirCubo(i+1, numcolumna);
                         matrizFilas[i + 1][numcolumna] = null;
                         //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
                         //Primero destruimos el cubo
-                        Destroy(matrizFilas[i][numcolumna]);
+                        datosTablero.destruirCubo(i, numcolumna);
                         matrizFilas[i][numcolumna] = null;
                         //Luego creamos un cubo en la posición i-1 si es posible
                         if (i - 1 >= 0)
@@ -676,7 +676,7 @@ public class Tablero : MonoBehaviour {
                         int valorcubo = getValorNuevoCubo(matrizFilas[i][numcolumna], matrizFilas[i - 1][numcolumna]);
                         //Hacemos desaparecer el cubo que hay en [i-1]
 
-                        destruirCubo(matrizFilas[i - 1], numcolumna);
+                        datosTablero.destruirCubo(i - 1, numcolumna);
 
                         /*Destroy(matrizFilas[i - 1][numcolumna]);
                         matrizFilas[i - 1][numcolumna] = null;*/
@@ -684,7 +684,7 @@ public class Tablero : MonoBehaviour {
                         //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
                         //Primero destruimos el cubo
 
-                        destruirCubo(matrizFilas[i], numcolumna);
+                        datosTablero.destruirCubo(i, numcolumna);
 
                         /*
                         Destroy(matrizFilas[i][numcolumna]);
@@ -798,7 +798,7 @@ public class Tablero : MonoBehaviour {
 
     public int obtenerValorFusionCubosYDestruirlos(int fila, int columna, int columnaCuboFusion)
     {
-        int valorcubo = getValorNuevoCubo(fila[columna], fila[columnaCuboFusion]);
+        int valorcubo = getValorNuevoCubo(datosTablero.getCubo(fila, columna), datosTablero.getCubo(fila, columnaCuboFusion));
         destruirCubo(fila, columnaCuboFusion);
         destruirCubo(fila, columna);
         return valorcubo;
@@ -993,10 +993,9 @@ public class Tablero : MonoBehaviour {
         return cubo.GetComponent<Cubo>().tipocubo == cubo2.GetComponent<Cubo>().tipocubo;
     }
 
-    public void destruirCubo(GameObject[] fila, int columna)
+    public void destruirCubo(int fila, int columna)
     {
-        Destroy(fila[columna]);
-        fila[columna] = null;
+        datosTablero.destruirCubo(fila, columna);
     }
 
     public bool estaEnElLimiteIzquierdo(int numcolumna)
@@ -1101,10 +1100,10 @@ public class Tablero : MonoBehaviour {
             else if (Input.GetKeyDown(KeyCode.A))
             {
                 //Movemos
-                movimientoIzquierda(matrizFilas[0], posprimeralinea);
-                movimientoIzquierda(matrizFilas[1], possegundalinea);
-                movimientoIzquierda(matrizFilas[2], posterceralinea);
-                movimientoIzquierda(matrizFilas[3], poscuartalinea);
+                movimientoIzquierda(datosTablero.getFila(0), datosTablero.getFilaCoordenadas(0));
+                movimientoIzquierda(datosTablero.getFila(1), datosTablero.getFilaCoordenadas(1));
+                movimientoIzquierda(datosTablero.getFila(2), datosTablero.getFilaCoordenadas(2));
+                movimientoIzquierda(datosTablero.getFila(3), datosTablero.getFilaCoordenadas(3));
 
                 //Creamos cubo si corresponde
                 if (debecrearsecubo)
@@ -1166,10 +1165,10 @@ public class Tablero : MonoBehaviour {
                 {
 
 
-                    print(imprimeposicion(matrizFilas[i][0]) +
-                        imprimeposicion(matrizFilas[i][1]) +
-                        imprimeposicion(matrizFilas[i][2]) +
-                        imprimeposicion(matrizFilas[i][3]));
+                    print(imprimeposicion(datosTablero.getCubo(i,0)) +
+                        imprimeposicion(datosTablero.getCubo(i, 1)) +
+                        imprimeposicion(datosTablero.getCubo(i, 2)) +
+                        imprimeposicion(datosTablero.getCubo(i, 3)));
 
 
                 }
@@ -1348,13 +1347,13 @@ public class Tablero : MonoBehaviour {
             //Cuarto cubo: Chequeamos abajo
 
             
-        if(   sonfusionables(matrizFilas[i][0], matrizFilas[i+1][0])
-           || sonfusionables(matrizFilas[i][0], matrizFilas[i][1])
-           || sonfusionables(matrizFilas[i][1], matrizFilas[i + 1][1])
-           || sonfusionables(matrizFilas[i][1], matrizFilas[i][2])
-           || sonfusionables(matrizFilas[i][2], matrizFilas[i + 1][2])
-           || sonfusionables(matrizFilas[i][2], matrizFilas[i][3])
-           || sonfusionables(matrizFilas[i][3], matrizFilas[i + 1][3])){
+        if(   sonfusionables(i, 0, i+1, 0)
+           || sonfusionables(i, 0, i, 1)
+           || sonfusionables(i, 1, i + 1, 1)
+           || sonfusionables(i, 1, i, 2)
+           || sonfusionables(i, 2, i + 1, 2)
+           || sonfusionables(i, 2, i, 3)
+           || sonfusionables(i, 3, i + 1, 3)){
 
                 return false;
 
@@ -1366,9 +1365,9 @@ public class Tablero : MonoBehaviour {
         //Chequeamos el segundo cubo con el tercer cubo
         //Chequeamos el tercer cubo con el cuarto cubo
 
-        if ((sonfusionables(matrizFilas[3][0], matrizFilas[3][1]))
-          ||(sonfusionables(matrizFilas[3][1], matrizFilas[3][2]))
-          ||(sonfusionables(matrizFilas[3][2], matrizFilas[3][3])))
+        if ((sonfusionables(3, 0, 3, 1))
+          ||(sonfusionables(3, 1, 3, 2))
+          ||(sonfusionables(3, 2, 3, 3)))
         {
             return false;
         }
@@ -1381,8 +1380,12 @@ public class Tablero : MonoBehaviour {
     }
 
     //Saber si dos cubos son fusionables
-    private bool sonfusionables(GameObject cubo1, GameObject cubo2)
+    private bool sonfusionables(int filacubo1, int columnacubo1, int filacubo2, int columnacubo2)
     {
+        GameObject cubo1 = datosTablero.getCubo(filacubo1, columnacubo1);
+        GameObject cubo2 = datosTablero.getCubo(filacubo2, columnacubo2);
+
+
         if ((cubo1.GetComponent<Cubo>().tipocubo + cubo2.GetComponent<Cubo>().tipocubo == 3) ||
            ((cubo1.GetComponent<Cubo>().tipocubo + cubo2.GetComponent<Cubo>().tipocubo > 4)
            && (cubo1.GetComponent<Cubo>().tipocubo == cubo2.GetComponent<Cubo>().tipocubo)))

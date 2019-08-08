@@ -15,7 +15,7 @@ public class DatosTablero : MonoBehaviour
 
     //Matriz de las posiciones 
     Vector2[][] matrizPosiciones = new Vector2[4][];
-
+    
     //Matriz de los cubos: Cada una de las filas de la matriz
     GameObject[] primeralinea = new GameObject[4];
     GameObject[] segundalinea = new GameObject[4];
@@ -55,6 +55,10 @@ public class DatosTablero : MonoBehaviour
         columna[2] = terceralinea[0];
         columna[3] = cuartalinea[0];
         return columna;
+    }
+    public GameObject getCubo(int fila, int columna)
+    {
+        return matrizFilas[fila][columna];
     }
 
     public Vector2 getCoordenadas(int numfila, int numcolumna)
