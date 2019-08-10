@@ -485,7 +485,7 @@ public class Tablero : MonoBehaviour {
         GameObject[] columna = datosTablero.getFila(numcolumna);
         Vector2[] columnaposiciones = datosTablero.getColumnaCoordenadas(numcolumna);
 
-        for (int numfila = 0; numfila <= 3; numfila++)
+        for (int numfila = 3; numfila >= 0; numfila--)
         {
             if (existeCuboDentroLimiteYPuedeFusionarseConCuboAbajo(columna, numfila))
             {
@@ -502,7 +502,7 @@ public class Tablero : MonoBehaviour {
             else if (existeCuboDentroLimiteQueTieneUnCuboAbajoPeroNoSonFusionables(columna, numfila))
             {
 
-                if (hayEspacioAbajo(columna, numfila))
+                if (hayEspacioArriba(columna, numfila))
                 {
 
                     mueveCuboArriba(columna, columnaposiciones, numfila);
@@ -531,10 +531,51 @@ public class Tablero : MonoBehaviour {
 
     public void movimientoAbajo(int numcolumna)
     {
+        GameObject[] columna = datosTablero.getFila(numcolumna);
+        Vector2[] columnaposiciones = datosTablero.getColumnaCoordenadas(numcolumna);
 
+        for (int numfila = 0; numfila <= 3; numfila++)
+        {
+            if (existeCuboDentroLimiteYPuedeFusionarseConCuboArriba(columna, numfila))
+            {
+                if (hayEspacioAbajo(columna, numfila))
+                {
+                    crearCuboAbajoTrasFusionConCuboArribaYActualizarPuntuacion(numfila, numcolumna, columnaposiciones);
+                }
+                else
+                {
+                    crearCuboEnPosicionTrasFusionConCuboArribaYActualizarPuntuacion(numfila, numcolumna);
+                }
+                debecrearsecubo = true;
+            }
+            else if (existeCuboDentroLimiteQueTieneUnCuboArribaPeroNoSonFusionables(columna, numfila))
+            {
 
+                if (hayEspacioAbajo(columna, numfila))
+                {
 
+                    mueveCuboAbajo(columna, columnaposiciones, numfila);
+                    debecrearsecubo = true;
+                }
+            }
+            else if (elCuboExisteYEstaEnLaPrimeraFila(columna, numfila))
+            {
 
+                if (hayEspacioAbajo(columna, numfila))
+                {
+                    mueveCuboAbajo(columna, columnaposiciones, numfila);
+                    debecrearsecubo = true;
+                }
+            }
+            else if (existeCuboDentroLimiteQueNoTieneCuboArriba(columna, numfila))
+            {
+                if (hayEspacioAbajo(columna, numfila))
+                {
+                    mueveCuboAbajo(columna, columnaposiciones, numfila);
+                    debecrearsecubo = true;
+                }
+            }
+        }
     }
 
 
@@ -843,6 +884,13 @@ public class Tablero : MonoBehaviour {
         crearCubo(numfila-1, numcolumna, valorcubo, "movimientoarriba");
         actualizapuntuacion(valorcubo);
     }
+    public void crearCuboAbajoTrasFusionConCuboArribaYActualizarPuntuacion(int numfila, int numcolumna, Vector2[] columnaposiciones)
+    {
+        int valorcubo = obtenerValorFusionCubosYDestruirArribaAbajo(numcolumna, numfila, numfila - 1);
+        crearCubo(numfila + 1, numcolumna, valorcubo, "movimientoabajo");
+        actualizapuntuacion(valorcubo);
+    }
+
 
     public bool existeCuboDentroLimiteYPuedeFusionarseConCuboALaIzquierda(GameObject[] fila, int numcolumna)
     {
@@ -884,6 +932,19 @@ public class Tablero : MonoBehaviour {
             return (existeCubo(cubo) && !estaEnElLimiteInferior(numfila) && existeCubo(cuboAbajo) && sonFusionables(cuboAbajo, cubo));
         }
     }
+    public bool existeCuboDentroLimiteYPuedeFusionarseConCuboArriba(GameObject[] columna, int numfila)
+    {
+        if (numfila + 1 > 3)
+        {
+            return false;
+        }
+        else
+        {
+            GameObject cubo = columna[numfila];
+            GameObject cuboArriba = columna[numfila + 1];
+            return (existeCubo(cubo) && !estaEnElLimiteSuperior(numfila) && existeCubo(cuboArriba) && sonFusionables(cuboArriba, cubo));
+        }
+    }
 
 
     public void crearCuboEnPosicionTrasFusionConCuboDerechaYActualizarPuntuacion(int numfila, int numcolumna)
@@ -910,6 +971,15 @@ public class Tablero : MonoBehaviour {
 
         actualizapuntuacion(valorcubo);
     }
+    public void crearCuboEnPosicionTrasFusionConCuboArribaYActualizarPuntuacion(int numfila, int numcolumna)
+    {
+        int valorcubo = obtenerValorFusionCubosYDestruirArribaAbajo(numcolumna, numfila, numfila - 1);
+
+        crearCubo(numfila, numcolumna, valorcubo, "nada");
+
+        actualizapuntuacion(valorcubo);
+    }
+
 
     public bool existeCuboDentroLimiteQueTieneUnCuboALaIzquierdaPeroNoSonFusionables(GameObject[] fila, int numcolumna)
     {
@@ -954,6 +1024,20 @@ public class Tablero : MonoBehaviour {
         }
     }
 
+    public bool existeCuboDentroLimiteQueTieneUnCuboArribaPeroNoSonFusionables(GameObject[] columna, int numfila)
+    {
+        if (numfila + 1 > 3)
+        {
+            return false;
+
+        }
+        else
+        {
+            GameObject cubo = columna[numfila];
+            GameObject cuboArriba = columna[numfila + 1];
+            return (existeCubo(cubo) && !estaEnElLimiteSuperior(numfila) && existeCubo(cuboArriba) && !sonFusionables(cuboArriba, cubo));
+        }
+    }
 
     public bool elCuboExisteYEstaEnLaPrimeraColumna(GameObject[] fila, int numcolumna)
     {
@@ -969,6 +1053,11 @@ public class Tablero : MonoBehaviour {
     {
         GameObject cubo = columna[numfila];
         return (existeCubo(cubo) && elCuboEstaEnLaPrimeraFila(numfila));
+    }
+    public bool elCuboExisteYEstaEnLaPrimeraFila(GameObject[] columna, int numfila)
+    {
+        GameObject cubo = columna[numfila];
+        return (existeCubo(cubo) && elCuboEstaEnLaUltimaFila(numfila));
     }
     public bool elCuboEstaEnLaPrimeraColumna(int numcolumna)
     {
@@ -1003,6 +1092,11 @@ public class Tablero : MonoBehaviour {
         GameObject cubo = columna[numfila];
         return (existeCubo(cubo) && !estaEnElLimiteInferior(numfila));
     }
+    public bool existeCuboDentroLimiteQueNoTieneCuboArriba(GameObject[] columna, int numfila)
+    {
+        GameObject cubo = columna[numfila];
+        return (existeCubo(cubo) && !estaEnElLimiteSuperior(numfila));
+    }
 
     public bool estaEnElLimiteIzquierdo(int numcolumna)
     {
@@ -1015,6 +1109,10 @@ public class Tablero : MonoBehaviour {
     public bool estaEnElLimiteInferior(int numfila)
     {
         return numfila - 1 < 0;
+    }
+    public bool estaEnElLimiteSuperior(int numfila)
+    {
+        return numfila + 1 > 3;
     }
 
     //Hay que seguir trabajando en este método
@@ -1066,6 +1164,15 @@ public class Tablero : MonoBehaviour {
         columna[fila] = null;
         debecrearsecubo = true;
     }
+    public void mueveCuboAbajo(GameObject[] columna, Vector2[] columnaposiciones, int fila)
+    {
+        columna[fila].transform.position = (columnaposiciones[fila - 1]);
+        columna[fila - 1] = columna[fila];
+        columna[fila] = null;
+        debecrearsecubo = true;
+    }
+
+
 
     public int obtenerValorFusionCubosYDestruirIzquierdaDerecha(int fila, int columna, int columnaCuboFusion)
     {
