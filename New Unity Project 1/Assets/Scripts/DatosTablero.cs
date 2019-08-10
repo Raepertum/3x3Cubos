@@ -70,6 +70,17 @@ public class DatosTablero : MonoBehaviour
     {
         return matrizPosiciones[numfila];
     }
+    public Vector2[] getColumnaCoordenadas(int numcolumna)
+    {
+        GameObject[] columna = getColumna(numcolumna);
+        Vector2[] coordenadascolumna = new Vector2[4];
+        coordenadascolumna[0] = posprimeralinea[numcolumna];
+        coordenadascolumna[1] = possegundalinea[numcolumna];
+        coordenadascolumna[2] = posterceralinea[numcolumna];
+        coordenadascolumna[3] = poscuartalinea[numcolumna];
+        return coordenadascolumna;
+        
+    }
     public bool esPosicionVacia(int fila, int columna) {
         return (matrizFilas[fila][columna] == null);
     }
