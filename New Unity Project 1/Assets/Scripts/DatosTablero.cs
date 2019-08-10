@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class DatosTablero : MonoBehaviour
+public class DatosTablero
 {
 
     //Matriz de coordenadas
@@ -15,7 +16,7 @@ public class DatosTablero : MonoBehaviour
 
     //Matriz de las posiciones 
     Vector2[][] matrizPosiciones = new Vector2[4][];
-    
+        
     //Matriz de los cubos: Cada una de las filas de la matriz
     GameObject[] primeralinea = new GameObject[4];
     GameObject[] segundalinea = new GameObject[4];
@@ -26,7 +27,7 @@ public class DatosTablero : MonoBehaviour
     GameObject[][] matrizFilas = new GameObject[4][];
 
 
-    void Start()
+    public DatosTablero()
     {
         //Cada fila de la matriz de posiciones es una fila de posiciones
         matrizPosiciones[0] = posprimeralinea;
@@ -40,6 +41,12 @@ public class DatosTablero : MonoBehaviour
         matrizFilas[2] = terceralinea;
         matrizFilas[3] = cuartalinea;
         
+    }
+
+    public String imprimeDatos()
+    {
+        return ("Estos son los datos:"+matrizPosiciones[0]+""+matrizPosiciones[1]);
+
     }
 
     public GameObject[] getFila(int numfila)
@@ -89,8 +96,7 @@ public class DatosTablero : MonoBehaviour
         matrizFilas[numfila][numcolumna] = cubo;
     }
     public void destruirCubo(int fila, int columna)
-    {
-        Destroy(matrizFilas[fila][columna]);
+    {        
         matrizFilas[fila][columna] = null;
     }
 }

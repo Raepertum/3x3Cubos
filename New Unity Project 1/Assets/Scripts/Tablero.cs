@@ -95,6 +95,9 @@ public class Tablero : MonoBehaviour {
     Sprite grafcubo6291456;
     Sprite grafcubo12582912;
 
+    //Los datos del tablero
+    DatosTablero datostablero;
+
     //El cubo que toca crear en la posición aleatoria
     int cuboacrear = 1;
 
@@ -124,14 +127,20 @@ public class Tablero : MonoBehaviour {
 
     //La lista de cubos cuya animación consiste en ser creados
     List<GameObject> cubosAnimarCreacion = new List<GameObject>();
-
+    
     //Las booleanas que se utilizan para controlar la animacion
     bool animacioncreacionpendiente;
+
+    //Para hacer comprobaciones
+    bool debug = true;
+    
 
 
     // Use this for initialization
     void Start () {
 
+        datosTablero = new DatosTablero();
+        
         //Instanciamos el mensaje de derrota en la posición inicial
         mensaje = Instantiate(mensajeDerrota, posinicialmensaje, Quaternion.identity);
         //Lo escalamos para que no se vea
@@ -185,8 +194,28 @@ public class Tablero : MonoBehaviour {
 
         //Creamos 4 cubos en posiciones no aleatorias
 
-        crearCubo(0, 2, 1, "Creacion");
-        crearCubo(0, 3, 2, "Creacion");
+
+        //crearCubo(0, 0, 1, "Creacion");
+        crearCubo(0, 1, 1, "Creacion");
+        //crearCubo(0, 2, 2, "Creacion");
+        crearCubo(0, 3, 1, "Creacion");
+
+        //crearCubo(1, 0, 1, "Creacion");
+        //crearCubo(1, 1, 1, "Creacion");
+        crearCubo(1, 2, 1, "Creacion");
+        //crearCubo(1, 3, 1, "Creacion");
+
+        //crearCubo(2, 0, 1, "Creacion");
+        //crearCubo(2, 1, 1, "Creacion");
+        crearCubo(2, 2, 1, "Creacion");
+        crearCubo(2, 3, 1, "Creacion");
+
+        //crearCubo(3, 0, 1, "Creacion");
+        //crearCubo(3, 1, 1, "Creacion");
+        //crearCubo(3, 2, 1, "Creacion");
+        crearCubo(3, 3, 1, "Creacion");
+
+
 
         //Actualizamos la posición inicial
         actualizapuntuacion(0);
@@ -235,6 +264,9 @@ public class Tablero : MonoBehaviour {
         //La línea la podemos sacar a través del número de línea
         //El número de columna como parámetro
         //El tipo de cubo
+
+        print("Los datos de tablero son"+datosTablero);
+        print(datosTablero.imprimeDatos());
 
 
         Vector2 coordenadas = datosTablero.getCoordenadas(numfila, numcolumna);
@@ -339,42 +371,48 @@ public class Tablero : MonoBehaviour {
    
     public void generarCuboPosicionAleatoria()
     {
-        //Número línea aleatorio
-        int numfilaaleatorio = UnityEngine.Random.Range(0,4);
-        //Número columna aleatorio
-        int numcolumnaaleatorio = UnityEngine.Random.Range(0,4);
-        //Si la posición está ocupada, se vuelve a llamar a la función
-        if (!datosTablero.esPosicionVacia(numfilaaleatorio, numcolumnaaleatorio)){
-            generarCuboPosicionAleatoria();
-        }
-        //Si la posición no está ocupada, se crea el cubo y se actualiza el valor de cuboacrear
-        else
+        if (debug == false)
         {
-            //Calculamos las coordenadas
-            Vector2 coordenadas = datosTablero.getCoordenadas(numfilaaleatorio, numcolumnaaleatorio);
-                        
-            //Ponemos la bandera para que no se avance
-            animacioncreacionpendiente = true;
-            //Creamos el cubo y animamos su generación
-            crearCubo(numfilaaleatorio, numcolumnaaleatorio, cuboacrear, "Creacion");
-            
-            //Mientras haya una animación pendiente
-            
-            /*
-            while (animacioncreacionpendiente)
-            {
 
-            };*/
-            
-            //Actualizamos el valor de cuboacrear
-            if (cuboacrear == 1)
+            //Número línea aleatorio
+            int numfilaaleatorio = UnityEngine.Random.Range(0, 4);
+            //Número columna aleatorio
+            int numcolumnaaleatorio = UnityEngine.Random.Range(0, 4);
+            //Si la posición está ocupada, se vuelve a llamar a la función
+            if (!datosTablero.esPosicionVacia(numfilaaleatorio, numcolumnaaleatorio))
             {
-                cuboacrear = 2;
+                generarCuboPosicionAleatoria();
             }
+            //Si la posición no está ocupada, se crea el cubo y se actualiza el valor de cuboacrear
             else
             {
-                cuboacrear = 1;
+                //Calculamos las coordenadas
+                Vector2 coordenadas = datosTablero.getCoordenadas(numfilaaleatorio, numcolumnaaleatorio);
+
+                //Ponemos la bandera para que no se avance
+                animacioncreacionpendiente = true;
+                //Creamos el cubo y animamos su generación
+                crearCubo(numfilaaleatorio, numcolumnaaleatorio, cuboacrear, "Creacion");
+
+                //Mientras haya una animación pendiente
+
+                /*
+                while (animacioncreacionpendiente)
+                {
+
+                };*/
+
+                //Actualizamos el valor de cuboacrear
+                if (cuboacrear == 1)
+                {
+                    cuboacrear = 2;
+                }
+                else
+                {
+                    cuboacrear = 1;
+                }
             }
+
         }
 }
         
@@ -1207,6 +1245,7 @@ public class Tablero : MonoBehaviour {
 
     public void destruirCubo(int fila, int columna)
     {
+        Destroy(datosTablero.getCubo(fila, columna));
         datosTablero.destruirCubo(fila, columna);
     }
         
@@ -1615,7 +1654,7 @@ public class Tablero : MonoBehaviour {
         {
             for(int j=0; j<=3; j++)
             {
-                datosTablero.destruirCubo(i, j);               
+                destruirCubo(i, j);               
             }
         }
         //Añadimos los dos primeros cubos
