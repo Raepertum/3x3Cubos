@@ -56,11 +56,11 @@ public class DatosTablero
 
     public GameObject[] getColumna(int numcolumna)
     {
-        GameObject[] columna = new GameObject[4];
-        columna[0] = primeralinea[0];
-        columna[1] = segundalinea[0];
-        columna[2] = terceralinea[0];
-        columna[3] = cuartalinea[0];
+        GameObject[] columna = new GameObject[4];      
+        columna[0] = matrizFilas[0][numcolumna];
+        columna[1] = matrizFilas[1][numcolumna];
+        columna[2] = matrizFilas[2][numcolumna];
+        columna[3] = matrizFilas[3][numcolumna];
         return columna;
     }
     public GameObject getCubo(int fila, int columna)
@@ -88,6 +88,15 @@ public class DatosTablero
         return coordenadascolumna;
         
     }
+    
+    public void actualizarColumnaDatosTablero(int numcolumna, GameObject[] columna)
+    {
+        matrizFilas[0][numcolumna] = columna[0];
+        matrizFilas[1][numcolumna] = columna[1];
+        matrizFilas[2][numcolumna] = columna[2];
+        matrizFilas[3][numcolumna] = columna[3];
+    }
+
     public bool esPosicionVacia(int fila, int columna) {
         return (matrizFilas[fila][columna] == null);
     }

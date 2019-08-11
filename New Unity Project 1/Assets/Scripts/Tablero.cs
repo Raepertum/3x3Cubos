@@ -194,10 +194,10 @@ public class Tablero : MonoBehaviour {
 
         //Creamos 4 cubos en posiciones no aleatorias
 
-        crearMultiplesCubos(3, 1, 0, 2,
-                            2, 1, 3, 2,
-                            1, 2, 0, 0,
-                            1, 0, 2, 0);
+        crearMultiplesCubos(1, 1, 0, 0,
+                            2, 2, 0, 0,
+                            1, 2, 1, 0,
+                            2, 1, 2, 0);
 
         //crearCubo(0, 0, 1, "Creacion");
         //crearCubo(0, 1, 1, "Creacion");
@@ -342,9 +342,7 @@ public class Tablero : MonoBehaviour {
         //La línea la podemos sacar a través del número de línea
         //El número de columna como parámetro
         //El tipo de cubo
-
-        print("Los datos de tablero son"+datosTablero);
-        print(datosTablero.imprimeDatos());
+        
 
 
         Vector2 coordenadas = datosTablero.getCoordenadas(numfila, numcolumna);
@@ -588,7 +586,7 @@ public class Tablero : MonoBehaviour {
      
     public void movimientoArriba(int numcolumna)
     {
-        GameObject[] columna = datosTablero.getFila(numcolumna);
+        GameObject[] columna = datosTablero.getColumna(numcolumna);
         Vector2[] columnaposiciones = datosTablero.getColumnaCoordenadas(numcolumna);
 
         for (int numfila = 3; numfila >= 0; numfila--)
@@ -637,317 +635,60 @@ public class Tablero : MonoBehaviour {
 
     public void movimientoAbajo(int numcolumna)
     {
-        GameObject[] columna = datosTablero.getFila(numcolumna);
+        GameObject[] columna = datosTablero.getColumna(numcolumna);
         Vector2[] columnaposiciones = datosTablero.getColumnaCoordenadas(numcolumna);
 
-        for (int numfila = 0; numfila <= 3; numfila++)
+        for (int numfila = 3; numfila >= 0; numfila--)
         {
             if (existeCuboDentroLimiteYPuedeFusionarseConCuboArriba(columna, numfila))
             {
+                print("El cubo puede fusionarse con el cubo de arriba");
+
                 if (hayEspacioAbajo(columna, numfila))
                 {
+                    print("Hay espacio abajo");
                     crearCuboAbajoTrasFusionConCuboArribaYActualizarPuntuacion(numfila, numcolumna, columnaposiciones);
                 }
                 else
                 {
+                    print("No hay espacio abajo");
                     crearCuboEnPosicionTrasFusionConCuboArribaYActualizarPuntuacion(numfila, numcolumna);
                 }
                 debecrearsecubo = true;
             }
             else if (existeCuboDentroLimiteQueTieneUnCuboArribaPeroNoSonFusionables(columna, numfila))
             {
-
+                print("Hay cubos no fusionables");
                 if (hayEspacioAbajo(columna, numfila))
                 {
-
+                    print("Hay espacio abajo");
                     mueveCuboAbajo(columna, columnaposiciones, numfila);
+                    datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
                     debecrearsecubo = true;
                 }
             }
             else if (elCuboExisteYEstaEnLaPrimeraFila(columna, numfila))
             {
-
+                print("El cubo existe y está en la primera fila");
                 if (hayEspacioAbajo(columna, numfila))
                 {
                     mueveCuboAbajo(columna, columnaposiciones, numfila);
+                    datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
                     debecrearsecubo = true;
                 }
             }
             else if (existeCuboDentroLimiteQueNoTieneCuboArriba(columna, numfila))
             {
+                print("El cubo existe, no está en la primera línea y no tiene cubo arriba");
                 if (hayEspacioAbajo(columna, numfila))
-                {
+                {                    
                     mueveCuboAbajo(columna, columnaposiciones, numfila);
+                    datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
                     debecrearsecubo = true;
                 }
             }
         }
     }
-
-
-
-/*
-
-
-    //Movimiento de abajo arriba usando getValorCubo
-    public void movimientoArriba(int numcolumna)
-    {
-        //El recorrido lo hacemos desde la fila número 0 a la fila número 3
-        for (int i = 0; i <= 3; i++)
-        {
-
-
-            //Si se encuentra el cubo que vamos a mover en cada fila dentro de la columna
-            if (!datosTablero.esPosicionVacia(i,numcolumna))
-            {
-                //Si (i+1) no es mayor que tres (i indica número de fila)
-                //Si en la línea de arriba[i+1] también hay un cubo
-                if ((i + 1 <= 3) && (!datosTablero.esPosicionVacia(i+1, numcolumna)))
-                {
-                    //Si ese cubo de la misma columna pero de una línea superior puede fusionarse:
-                    //Caso 1\Caso 2: Uno de los cubos es un 1 y otro de los cubos es un 2
-
-
-                    if (cuboSumaConCuboTres(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i + 1][numcolumna].GetComponent<Cubo>())
-                        || cubosSumanMasDeCuatro(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i + 1][numcolumna].GetComponent<Cubo>())
-                        && cubosSonIguales(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i + 1][numcolumna].GetComponent<Cubo>()))
-                        
-                    {
-                        //Obtenemos el valor del cubo que vamos a crear
-                        int valorcubo = getValorNuevoCubo(matrizFilas[i][numcolumna], matrizFilas[i + 1][numcolumna]);
-                        //Hacemos desaparecer el cubo que hay en [i-1]
-                        datosTablero.destruirCubo(i+1, numcolumna);
-                        matrizFilas[i + 1][numcolumna] = null;
-                        //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
-                        //Primero destruimos el cubo
-                        datosTablero.destruirCubo(i, numcolumna);
-                        matrizFilas[i][numcolumna] = null;
-                        //Luego creamos un cubo en la posición i-1 si es posible
-                        if (i - 1 >= 0)
-                        {
-                            //Crearíamos un cubo
-                            debecrearsecubo = true;
-
-                            //Si no existe otro cubo que impida que se ocupe la posición i-1
-                            if (datosTablero.esPosicionVacia(i-1, numcolumna))
-                            {
-                                //Creamos el cubo 3
-                                crearCubo(i-1, numcolumna, valorcubo, "MovimientoArriba");
-
-                            }
-
-                            //Si dicho cubo sí existe
-                            else
-                            {
-                                //Creamos el cubo 3
-                                crearCubo(i, numcolumna, valorcubo, "Nada");                                
-                            }
-
-                        }
-                        else if (i - 1 < 0)
-                        {
-                            //Creamos el cubo 3
-                            crearCubo(i, numcolumna, valorcubo, "Nada");                           
-
-                        }
-                        //Actualizamos la puntuación
-                        actualizapuntuacion(valorcubo);
-                    }
-                    
-                    //Caso 3: Hay un cubo a la arriba pero no son compatibles
-
-                    else
-                    {
-
-                        if (i > 0)
-                        {
-                            //Si el espacio de arriba está desocupado
-
-                            if (datosTablero.esPosicionVacia(i-1, numcolumna))
-                            {
-                                //Desplazamos el cubo de i a i-1
-                                matrizFilas[i][numcolumna].transform.position = datosTablero.getCoordenadas(i-1, numcolumna);
-                                //Cambiamos su posición en la matriz
-                                matrizFilas[i - 1][numcolumna] = matrizFilas[i][numcolumna];
-                                matrizFilas[i][numcolumna] = null;
-                                //Crearíamos un cubo
-                                debecrearsecubo = true;
-                            }
-                        }
-
-                    }
-                }
-                //Si en la fila[i+1] no hay un cubo (Si no se cumple la condición de fusión)
-                else
-                {
-                    
-
-                    //Si no está en el extremo del tablero
-                    if (i > 0)
-                    {
-                        //Si el espacio de arriba está desocupado
-                        if (datosTablero.esPosicionVacia(i-1, numcolumna))
-                        {
-                            
-                            //Desplazamos el cubo de i a i-1
-
-
-
-                            matrizFilas[i][numcolumna].transform.position = (matrizPosiciones[i - 1][numcolumna]);
-                            //Cambiamos su posición en la matriz
-                            matrizFilas[i - 1][numcolumna] = matrizFilas[i][numcolumna];
-                            matrizFilas[i][numcolumna] = null;
-                            //Crearíamos un cubo
-                            debecrearsecubo = true;
-
-                        }
-                    }
-                }
-            }
-
-            else
-            {
-               
-            }
-        }
-    }
-       
-   
-
-
-    //Movimiento de arriba abajo usando getValorCubo
-    public void movimientoAbajo(int numcolumna)
-    {
-        //El recorrido lo hacemos desde la fila número 3 a la fila número 0
-        for (int i = 3; i >= 0; i--)
-        {
-            //Si se encuentra el cubo que vamos a mover en cada fila dentro de la columna
-            if (!datosTablero.esPosicionVacia(i,numcolumna))                                
-            {
-                //Si (i-1) no es menor que cero (i indica número de fila)
-                //Si en la línea de abajo[i-1] también hay un cubo
-                if (!estaEnElLimiteIzquierdo(i) && !datosTablero.esPosicionVacia(i-1, numcolumna))
-                {
-                    //Si ese cubo de la misma columna pero de una línea inferior puede fusionarse:
-                    //Caso 1: Uno de los cubos es un 1 y otro de los cubos es un 2
-
-
-                    if (cuboSumaConCuboTres(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i - 1][numcolumna].GetComponent<Cubo>())
-                        || cubosSumanMasDeCuatro(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i - 1][numcolumna].GetComponent<Cubo>())
-                        && cubosSonIguales(matrizFilas[i][numcolumna].GetComponent<Cubo>(), matrizFilas[i - 1][numcolumna].GetComponent<Cubo>()))
-
-                    {
-                       
-                        //Obtenemos el valor del cubo que vamos a crear
-                        int valorcubo = getValorNuevoCubo(matrizFilas[i][numcolumna], matrizFilas[i - 1][numcolumna]);
-                        //Hacemos desaparecer el cubo que hay en [i-1]
-
-                        datosTablero.destruirCubo(i - 1, numcolumna);
-
-                        /*Destroy(matrizFilas[i - 1][numcolumna]);
-                        matrizFilas[i - 1][numcolumna] = null;
-
-                        //Convertimos el cubo que hay en i en un cubo de nivel superior (Nivel 3)
-                        //Primero destruimos el cubo
-
-                        datosTablero.destruirCubo(i, numcolumna);
-
-                        /*
-                        Destroy(matrizFilas[i][numcolumna]);
-                        matrizFilas[i][numcolumna] = null;
-                        
-
-                        //Luego creamos un cubo en la posición i+1 si es posible
-                        if (i + 1 <= 3)
-                        {
-                           
-                            //Crearíamos un cubo
-                            debecrearsecubo = true;
-
-                            //Si no existe otro cubo que impida que se ocupe la posición i+1
-                            if (datosTablero.esPosicionVacia(i+1, numcolumna))
-                            {
-                                //Creamos el cubo 3
-
-                                crearCubo(i+1, numcolumna, valorcubo, "movimientoabajo");
-                               
-                            }
-
-                            //Si dicho cubo sí existe
-                            else
-                            {
-                                //Creamos el cubo 3
-                                crearCubo(i, numcolumna, valorcubo, "nada");
-                                
-                            }
-
-                        }
-                        else if (i + 1 > 3)
-                        {
-                            //Creamos el cubo 3
-                            crearCubo(i, numcolumna, valorcubo, "nada");
-                            
-                        }
-                        //Actualizamos la puntuación
-                        actualizapuntuacion(valorcubo);
-                    }
-                    
-                    //Caso 3: Hay un cubo abajo pero no son compatibles
-
-                    else
-                    {
-                        if (i + 1 <= 3)
-                        {
-                            //Si el espacio de abajo está desocupado
-
-                            if (datosTablero.esPosicionVacia(i+1, numcolumna))                            
-                            {
-                                //Desplazamos el cubo de i a i-1
-                                matrizFilas[i][numcolumna].transform.position = (matrizPosiciones[i + 1][numcolumna]);
-                                //Cambiamos su posición en la matriz
-                                matrizFilas[i + 1][numcolumna] = matrizFilas[i][numcolumna];
-                                matrizFilas[i][numcolumna] = null;
-                                //Crearíamos un cubo
-                                debecrearsecubo = true;
-                            }
-                        }
-
-                    }
-
-
-                }
-                //Si en la fila[i-1] no hay un cubo (Si no se cumple la condición de fusión)
-                else
-                {
-                   
-                    //Si no está en el extremo del tablero
-                    if (i + 1 <= 3)
-                    {
-                        //Si el espacio de abajo está desocupado
-                        if (datosTablero.esPosicionVacia(i + 1, numcolumna))                            
-                        {
-
-                            //Desplazamos el cubo de i a i+1
-                            matrizFilas[i][numcolumna].transform.position = (matrizPosiciones[i + 1][numcolumna]);
-                            //Cambiamos su posición en la matriz
-                            matrizFilas[i + 1][numcolumna] = matrizFilas[i][numcolumna];
-                            matrizFilas[i][numcolumna] = null;
-                            //Crearíamos un cubo
-                            debecrearsecubo = true;
-                        }
-                    }
-                }
-            }
-
-            else
-            {
-                
-            }
-        }
-    }
-    */
-
-
 
     public bool hayEspacioALaDerecha(GameObject[] fila, int numcolumna)
     {
@@ -967,7 +708,7 @@ public class Tablero : MonoBehaviour {
     public bool hayEspacioAbajo(GameObject[] columna, int numfila)
     {
         if (numfila + 1 > 3) { return false; }
-        else return columna[numfila + 1];
+        else return columna[numfila + 1]==null;
     }
     
     public void crearCuboALaDerechaTrasFusionConCuboIzquierdaYActualizarPuntuacion(int numfila, int numcolumna, Vector2[] filaposiciones)
@@ -994,7 +735,7 @@ public class Tablero : MonoBehaviour {
     {
         int valorcubo = obtenerValorFusionCubosYDestruirArribaAbajo(numcolumna, numfila, numfila - 1);
         crearCubo(numfila + 1, numcolumna, valorcubo, "movimientoabajo");
-        actualizapuntuacion(valorcubo);
+        actualizapuntuacion(valorcubo);                
     }
 
 
@@ -1040,14 +781,16 @@ public class Tablero : MonoBehaviour {
     }
     public bool existeCuboDentroLimiteYPuedeFusionarseConCuboArriba(GameObject[] columna, int numfila)
     {
-        if (numfila + 1 > 3)
+        if (numfila - 1 < 0)
         {
             return false;
         }
         else
-        {
+        {            
             GameObject cubo = columna[numfila];
-            GameObject cuboArriba = columna[numfila + 1];
+            GameObject cuboArriba = columna[numfila - 1];
+            
+
             return (existeCubo(cubo) && !estaEnElLimiteSuperior(numfila) && existeCubo(cuboArriba) && sonFusionables(cuboArriba, cubo));
         }
     }
@@ -1158,12 +901,12 @@ public class Tablero : MonoBehaviour {
     public bool elCuboExisteYEstaEnLaUltimaFila(GameObject[] columna, int numfila)
     {
         GameObject cubo = columna[numfila];
-        return (existeCubo(cubo) && elCuboEstaEnLaPrimeraFila(numfila));
+        return (existeCubo(cubo) && elCuboEstaEnLaUltimaFila(numfila));
     }
     public bool elCuboExisteYEstaEnLaPrimeraFila(GameObject[] columna, int numfila)
     {
         GameObject cubo = columna[numfila];
-        return (existeCubo(cubo) && elCuboEstaEnLaUltimaFila(numfila));
+        return (existeCubo(cubo) && elCuboEstaEnLaPrimeraFila(numfila));
     }
     public bool elCuboEstaEnLaPrimeraColumna(int numcolumna)
     {
@@ -1214,11 +957,11 @@ public class Tablero : MonoBehaviour {
     }
     public bool estaEnElLimiteInferior(int numfila)
     {
-        return numfila - 1 < 0;
+        return numfila + 1 > 3;
     }
     public bool estaEnElLimiteSuperior(int numfila)
     {
-        return numfila + 1 > 3;
+        return numfila - 1 < 0;
     }
 
     //Hay que seguir trabajando en este método
@@ -1265,16 +1008,16 @@ public class Tablero : MonoBehaviour {
     }
     public void mueveCuboArriba(GameObject[] columna, Vector2[] columnaposiciones, int fila)
     {
-        columna[fila].transform.position = (columnaposiciones[fila + 1]);
-        columna[fila + 1] = columna[fila];
-        columna[fila] = null;
-        debecrearsecubo = true;
-    }
-    public void mueveCuboAbajo(GameObject[] columna, Vector2[] columnaposiciones, int fila)
-    {
         columna[fila].transform.position = (columnaposiciones[fila - 1]);
         columna[fila - 1] = columna[fila];
         columna[fila] = null;
+        debecrearsecubo = true;
+    }
+    public void mueveCuboAbajo(GameObject[] columna, Vector2[] columnaposiciones, int numfila)
+    {
+        columna[numfila].transform.position = (columnaposiciones[numfila + 1]);
+        columna[numfila + 1] = columna[numfila];
+        columna[numfila] = null;
         debecrearsecubo = true;
     }
 
@@ -1289,7 +1032,7 @@ public class Tablero : MonoBehaviour {
     }
     public int obtenerValorFusionCubosYDestruirArribaAbajo(int numcolumna, int numfila, int numfilaCuboFusion)
     {
-        int valorcubo = getValorNuevoCubo(datosTablero.getCubo(numfila, numcolumna), datosTablero.getCubo(numfila, numfilaCuboFusion));
+        int valorcubo = getValorNuevoCubo(datosTablero.getCubo(numfila, numcolumna), datosTablero.getCubo(numfilaCuboFusion, numcolumna));
         destruirCubo(numfila, numcolumna);
         destruirCubo(numfilaCuboFusion, numcolumna);
         return valorcubo;
