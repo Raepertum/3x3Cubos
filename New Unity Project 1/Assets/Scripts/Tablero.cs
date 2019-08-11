@@ -194,10 +194,10 @@ public class Tablero : MonoBehaviour {
 
         //Creamos 4 cubos en posiciones no aleatorias
 
-        crearMultiplesCubos(1, 1, 0, 0,
-                            2, 2, 0, 0,
-                            1, 2, 1, 0,
-                            2, 1, 2, 0);
+        crearMultiplesCubos(0, 0, 0, 0,
+                            2, 0, 0, 0,
+                            0, 2, 2, 0,
+                            2, 0, 2, 2);
 
         //crearCubo(0, 0, 1, "Creacion");
         //crearCubo(0, 1, 1, "Creacion");
@@ -648,11 +648,13 @@ public class Tablero : MonoBehaviour {
                 {
                     print("Hay espacio abajo");
                     crearCuboAbajoTrasFusionConCuboArribaYActualizarPuntuacion(numfila, numcolumna, columnaposiciones);
+                    columna = datosTablero.getColumna(numcolumna);
                 }
                 else
                 {
                     print("No hay espacio abajo");
                     crearCuboEnPosicionTrasFusionConCuboArribaYActualizarPuntuacion(numfila, numcolumna);
+                    columna = datosTablero.getColumna(numcolumna);
                 }
                 debecrearsecubo = true;
             }
@@ -664,6 +666,7 @@ public class Tablero : MonoBehaviour {
                     print("Hay espacio abajo");
                     mueveCuboAbajo(columna, columnaposiciones, numfila);
                     datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
+                    columna = datosTablero.getColumna(numcolumna);
                     debecrearsecubo = true;
                 }
             }
@@ -674,6 +677,7 @@ public class Tablero : MonoBehaviour {
                 {
                     mueveCuboAbajo(columna, columnaposiciones, numfila);
                     datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
+                    columna = datosTablero.getColumna(numcolumna);
                     debecrearsecubo = true;
                 }
             }
@@ -821,7 +825,8 @@ public class Tablero : MonoBehaviour {
         actualizapuntuacion(valorcubo);
     }
     public void crearCuboEnPosicionTrasFusionConCuboArribaYActualizarPuntuacion(int numfila, int numcolumna)
-    {
+    {      
+        
         int valorcubo = obtenerValorFusionCubosYDestruirArribaAbajo(numcolumna, numfila, numfila - 1);
 
         crearCubo(numfila, numcolumna, valorcubo, "nada");
@@ -1032,6 +1037,10 @@ public class Tablero : MonoBehaviour {
     }
     public int obtenerValorFusionCubosYDestruirArribaAbajo(int numcolumna, int numfila, int numfilaCuboFusion)
     {
+        print("Fusionar cubo de " + numfila + " " + numcolumna);
+        print("con " + numfilaCuboFusion + " " + numcolumna);
+                       
+
         int valorcubo = getValorNuevoCubo(datosTablero.getCubo(numfila, numcolumna), datosTablero.getCubo(numfilaCuboFusion, numcolumna));
         destruirCubo(numfila, numcolumna);
         destruirCubo(numfilaCuboFusion, numcolumna);
