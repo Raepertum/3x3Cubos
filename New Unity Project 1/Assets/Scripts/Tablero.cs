@@ -194,10 +194,10 @@ public class Tablero : MonoBehaviour {
 
         //Creamos 4 cubos en posiciones no aleatorias
 
-        crearMultiplesCubos(0, 0, 0, 0,
-                            2, 0, 0, 0,
-                            0, 2, 2, 0,
-                            2, 0, 2, 2);
+        crearMultiplesCubos(3, 2, 1, 1,
+                            1, 1, 2, 0,
+                            0, 3, 0, 2,
+                            2, 2, 0, 0);
 
         //crearCubo(0, 0, 1, "Creacion");
         //crearCubo(0, 1, 1, "Creacion");
@@ -461,10 +461,7 @@ public class Tablero : MonoBehaviour {
             }
             //Si la posición no está ocupada, se crea el cubo y se actualiza el valor de cuboacrear
             else
-            {
-                //Calculamos las coordenadas
-                Vector2 coordenadas = datosTablero.getCoordenadas(numfilaaleatorio, numcolumnaaleatorio);
-
+            {                
                 //Ponemos la bandera para que no se avance
                 animacioncreacionpendiente = true;
                 //Creamos el cubo y animamos su generación
@@ -589,36 +586,44 @@ public class Tablero : MonoBehaviour {
         GameObject[] columna = datosTablero.getColumna(numcolumna);
         Vector2[] columnaposiciones = datosTablero.getColumnaCoordenadas(numcolumna);
 
-        for (int numfila = 3; numfila >= 0; numfila--)
+        for (int numfila = 0; numfila <= 3; numfila++)
         {
             if (existeCuboDentroLimiteYPuedeFusionarseConCuboAbajo(columna, numfila))
             {
+                print("El cubo existe y se puede fusionar con cubo abajo");
+
                 if (hayEspacioArriba(columna, numfila))
                 {
                     crearCuboArribaTrasFusionConCuboAbajoYActualizarPuntuacion(numfila, numcolumna, columnaposiciones);
+                    columna = datosTablero.getColumna(numcolumna);
                 }
                 else
                 {
                     crearCuboEnPosicionTrasFusionConCuboAbajoYActualizarPuntuacion(numfila, numcolumna);
+                    columna = datosTablero.getColumna(numcolumna);
                 }
                 debecrearsecubo = true;
             }
             else if (existeCuboDentroLimiteQueTieneUnCuboAbajoPeroNoSonFusionables(columna, numfila))
             {
-
+                print("El cubo existe y no se puede fusionar con cubo abajo");
                 if (hayEspacioArriba(columna, numfila))
                 {
 
                     mueveCuboArriba(columna, columnaposiciones, numfila);
+                    datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
+                    columna = datosTablero.getColumna(numcolumna);
                     debecrearsecubo = true;
                 }
             }
             else if (elCuboExisteYEstaEnLaUltimaFila(columna, numfila))
             {
-
+                print("El cubo existe y está en la última fila");
                 if (hayEspacioArriba(columna, numfila))
                 {
                     mueveCuboArriba(columna, columnaposiciones, numfila);
+                    datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
+                    columna = datosTablero.getColumna(numcolumna);
                     debecrearsecubo = true;
                 }
             }
@@ -627,6 +632,7 @@ public class Tablero : MonoBehaviour {
                 if (hayEspacioArriba(columna, numfila))
                 {
                     mueveCuboArriba(columna, columnaposiciones, numfila);
+                    datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
                     debecrearsecubo = true;
                 }
             }
@@ -641,18 +647,14 @@ public class Tablero : MonoBehaviour {
         for (int numfila = 3; numfila >= 0; numfila--)
         {
             if (existeCuboDentroLimiteYPuedeFusionarseConCuboArriba(columna, numfila))
-            {
-                print("El cubo puede fusionarse con el cubo de arriba");
-
+            {               
                 if (hayEspacioAbajo(columna, numfila))
                 {
-                    print("Hay espacio abajo");
                     crearCuboAbajoTrasFusionConCuboArribaYActualizarPuntuacion(numfila, numcolumna, columnaposiciones);
                     columna = datosTablero.getColumna(numcolumna);
                 }
                 else
                 {
-                    print("No hay espacio abajo");
                     crearCuboEnPosicionTrasFusionConCuboArribaYActualizarPuntuacion(numfila, numcolumna);
                     columna = datosTablero.getColumna(numcolumna);
                 }
@@ -660,10 +662,8 @@ public class Tablero : MonoBehaviour {
             }
             else if (existeCuboDentroLimiteQueTieneUnCuboArribaPeroNoSonFusionables(columna, numfila))
             {
-                print("Hay cubos no fusionables");
                 if (hayEspacioAbajo(columna, numfila))
                 {
-                    print("Hay espacio abajo");
                     mueveCuboAbajo(columna, columnaposiciones, numfila);
                     datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
                     columna = datosTablero.getColumna(numcolumna);
@@ -672,7 +672,6 @@ public class Tablero : MonoBehaviour {
             }
             else if (elCuboExisteYEstaEnLaPrimeraFila(columna, numfila))
             {
-                print("El cubo existe y está en la primera fila");
                 if (hayEspacioAbajo(columna, numfila))
                 {
                     mueveCuboAbajo(columna, columnaposiciones, numfila);
@@ -683,8 +682,7 @@ public class Tablero : MonoBehaviour {
             }
             else if (existeCuboDentroLimiteQueNoTieneCuboArriba(columna, numfila))
             {
-                print("El cubo existe, no está en la primera línea y no tiene cubo arriba");
-                if (hayEspacioAbajo(columna, numfila))
+                 if (hayEspacioAbajo(columna, numfila))
                 {                    
                     mueveCuboAbajo(columna, columnaposiciones, numfila);
                     datosTablero.actualizarColumnaDatosTablero(numcolumna, columna);
@@ -772,14 +770,15 @@ public class Tablero : MonoBehaviour {
     }
     public bool existeCuboDentroLimiteYPuedeFusionarseConCuboAbajo(GameObject[] columna, int numfila)
     {
-        if (numfila - 1 < 0)
+        if (numfila + 1 > 3)
         {
             return false;
         }
         else
         {
             GameObject cubo = columna[numfila];
-            GameObject cuboAbajo = columna[numfila - 1];
+            GameObject cuboAbajo = columna[numfila + 1];
+
             return (existeCubo(cubo) && !estaEnElLimiteInferior(numfila) && existeCubo(cuboAbajo) && sonFusionables(cuboAbajo, cubo));
         }
     }
