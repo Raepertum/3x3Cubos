@@ -11,7 +11,7 @@ public class Tablero : MonoBehaviour {
     - Crear la transición gráfica cuando se genera un cubo aleatorio (Incremento de escala)
     - Crear las transiciones gráficas cuando fusionamos cubos
     - Crear las transiciones gráficas cuando movemos cubos
-    - Usar movimiento con el sonido y con la animación
+    - Usar sonido con el movimiento y con la animación
     - Crear un menú desde el que seleccionar la opción de jugar
     - Actualizar las funciones de movimiento para que utilicen sólo las matrices
     - Crear el generador de cubos  
@@ -194,26 +194,30 @@ public class Tablero : MonoBehaviour {
 
         //Creamos 4 cubos en posiciones no aleatorias
 
+        crearMultiplesCubos(3, 1, 0, 2,
+                            2, 1, 3, 2,
+                            1, 2, 0, 0,
+                            1, 0, 2, 0);
 
         //crearCubo(0, 0, 1, "Creacion");
-        crearCubo(0, 1, 1, "Creacion");
+        //crearCubo(0, 1, 1, "Creacion");
         //crearCubo(0, 2, 2, "Creacion");
-        crearCubo(0, 3, 1, "Creacion");
+        //crearCubo(0, 3, 1, "Creacion");
 
         //crearCubo(1, 0, 1, "Creacion");
         //crearCubo(1, 1, 1, "Creacion");
-        crearCubo(1, 2, 1, "Creacion");
+        //crearCubo(1, 2, 1, "Creacion");
         //crearCubo(1, 3, 1, "Creacion");
 
         //crearCubo(2, 0, 1, "Creacion");
         //crearCubo(2, 1, 1, "Creacion");
-        crearCubo(2, 2, 1, "Creacion");
-        crearCubo(2, 3, 1, "Creacion");
+        //crearCubo(2, 2, 1, "Creacion");
+        //crearCubo(2, 3, 1, "Creacion");
 
         //crearCubo(3, 0, 1, "Creacion");
         //crearCubo(3, 1, 1, "Creacion");
         //crearCubo(3, 2, 1, "Creacion");
-        crearCubo(3, 3, 1, "Creacion");
+        //crearCubo(3, 3, 1, "Creacion");
 
 
 
@@ -251,6 +255,80 @@ public class Tablero : MonoBehaviour {
         grafcubo3145728 = Resources.Load("Cubo 3145728", typeof(Sprite)) as Sprite;
         grafcubo6291456 = Resources.Load("Cubo 6291456", typeof(Sprite)) as Sprite;
         grafcubo12582912 = Resources.Load("Cubo 12582912", typeof(Sprite)) as Sprite;
+
+    }
+
+    private void crearMultiplesCubos(int tipocubo00, int tipocubo01, int tipocubo02, int tipocubo03,
+                                     int tipocubo10, int tipocubo11, int tipocubo12, int tipocubo13,
+                                     int tipocubo20, int tipocubo21, int tipocubo22, int tipocubo23,
+                                     int tipocubo30, int tipocubo31, int tipocubo32, int tipocubo33)
+    {
+        if (tipocubo00 != 0)
+        {
+            crearCubo(0, 0, tipocubo00, "Creacion");
+        }
+        if (tipocubo01 != 0)
+        {
+            crearCubo(0, 1, tipocubo01, "Creacion");
+        }
+        if (tipocubo02 != 0)
+        {
+            crearCubo(0, 2, tipocubo02, "Creacion");
+        }
+        if (tipocubo03 != 0)
+        {
+            crearCubo(0, 3, tipocubo03, "Creacion");
+        }
+        if (tipocubo10 != 0)
+        {
+            crearCubo(1, 0, tipocubo10, "Creacion");
+        }
+        if (tipocubo11 != 0)
+        {
+            crearCubo(1, 1, tipocubo11, "Creacion");
+        }
+        if (tipocubo12 != 0)
+        {
+            crearCubo(1, 2, tipocubo12, "Creacion");
+        }
+        if (tipocubo13 != 0)
+        {
+            crearCubo(1, 3, tipocubo13, "Creacion");
+        }
+        if (tipocubo20 != 0)
+        {
+            crearCubo(2, 0, tipocubo20, "Creacion");
+        }
+        if (tipocubo21 != 0)
+        {
+            crearCubo(2, 1, tipocubo21, "Creacion");
+        }
+        if (tipocubo22 != 0)
+        {
+            crearCubo(2, 2, tipocubo22, "Creacion");
+        }
+        if (tipocubo23 != 0)
+        {
+            crearCubo(2, 3, tipocubo23, "Creacion");
+        }
+        if (tipocubo30 != 0)
+        {
+            crearCubo(3, 0, tipocubo30, "Creacion");
+        }
+        if (tipocubo31 != 0)
+        {
+            crearCubo(3, 1, tipocubo31, "Creacion");
+        }
+        if (tipocubo32 != 0)
+        {
+            crearCubo(3, 2, tipocubo32, "Creacion");
+        }
+        if (tipocubo33 != 0)
+        {
+            crearCubo(3, 3, tipocubo33, "Creacion");
+        }
+
+
 
     }
 
@@ -416,51 +494,41 @@ public class Tablero : MonoBehaviour {
         }
 }
         
-    public void movimientoDerecha(int numfila, Vector2[] filaposiciones)
+    public void movimientoDerecha(int numfila)
     {
         GameObject[] fila = datosTablero.getFila(numfila);
+        Vector2[] filaposiciones = datosTablero.getFilaCoordenadas(numfila);
 
         for (int numcolumna = 3; numcolumna >= 0; numcolumna--)
         {
             if (existeCuboDentroLimiteYPuedeFusionarseConCuboALaIzquierda(fila, numcolumna))
-            {
-                print("Existe cubo dentro del límite y puede fusionarse con el cubo que tiene a la izquierda");
+            {                
                 if (hayEspacioALaDerecha(fila, numcolumna)){
-                    crearCuboALaDerechaTrasFusionConCuboIzquierdaYActualizarPuntuacion(numfila, numcolumna, filaposiciones);
-                    print("Hay espacio a la derecha");
+                    crearCuboALaDerechaTrasFusionConCuboIzquierdaYActualizarPuntuacion(numfila, numcolumna, filaposiciones);                    
                 }
                 else
                 {
-                    crearCuboEnPosicionTrasFusionConCuboIzquierdaYActualizarPuntuacion(numfila, numcolumna);
-                    print("No hay espacio a la derecha");
+                    crearCuboEnPosicionTrasFusionConCuboIzquierdaYActualizarPuntuacion(numfila, numcolumna);                    
                 }
                 debecrearsecubo = true;
             }
             else if (existeCuboDentroLimiteQueTieneUnCuboALaIzquierdaPeroNoSonFusionables(fila, numcolumna))
-            {
-                print("Existe cubo dentro del límite que tiene un cubo a la izquierda pero no son fusionables");
-                if (hayEspacioALaDerecha(fila, numcolumna)){
-                    print("Hay espacio a la derecha");
+            {               
+                if (hayEspacioALaDerecha(fila, numcolumna)){                   
                     mueveCuboAlaDerecha(fila, filaposiciones, numcolumna);
                     debecrearsecubo = true;                    
                 }                
             }
-            else if (elCuboExisteYEstaEnLaPrimeraColumna(fila, numcolumna)){
-                print("El cubo está en la primera columna");
-                if(hayEspacioALaDerecha(fila, numcolumna)){
-                    print("Hay espacio a la derecha");                    
+            else if (elCuboExisteYEstaEnLaPrimeraColumna(fila, numcolumna)){                
+                if(hayEspacioALaDerecha(fila, numcolumna)){                                  
                     mueveCuboAlaDerecha(fila, filaposiciones, numcolumna);
                     debecrearsecubo = true;
                 }
             }
 
             else if (existeCuboDentroLimiteQueNoTieneCuboALaIzquierda(fila, numcolumna))
-            {
-                print("Existe un cubo dentro del límite que no tiene un cubo a la izquierda");
-                print("Se trata de un cubo en la posición "+numcolumna);
-
-                if (hayEspacioALaDerecha(fila, numcolumna)){
-                    print("Hay espacio a la derecha");
+            {               
+                if (hayEspacioALaDerecha(fila, numcolumna)){                   
                     mueveCuboAlaDerecha(fila, filaposiciones, numcolumna);
                     debecrearsecubo = true;
                 }
@@ -1312,10 +1380,10 @@ public class Tablero : MonoBehaviour {
 
                 //Movemos
 
-                movimientoDerecha(0, datosTablero.getFilaCoordenadas(0));
-                movimientoDerecha(1, datosTablero.getFilaCoordenadas(1));
-                movimientoDerecha(2, datosTablero.getFilaCoordenadas(2));
-                movimientoDerecha(3, datosTablero.getFilaCoordenadas(3));
+                movimientoDerecha(0);
+                movimientoDerecha(1);
+                movimientoDerecha(2);
+                movimientoDerecha(3);
 
                 /*
                 movimientoDerecha(matrizFilas[0], posprimeralinea);
