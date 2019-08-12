@@ -31,39 +31,6 @@ public class Tablero : MonoBehaviour {
     //La posición inicial del mensaje
     Vector3 posinicialmensaje = new Vector3(0.5f,0.5f,0);
 
-
-    //Matriz de coordenadas
-
-    /*
-    Vector2[] posprimeralinea = {new Vector3(-2.5f, 2.53f),new Vector3(-0.86f, 2.53f),
-                                 new Vector3(0.86f, 2.53f),new Vector3(2.53f, 2.53f)};
-    Vector2[] possegundalinea = {new Vector3(-2.5f, 0.86f),new Vector3(-0.86f, 0.86f),
-                                 new Vector3(0.86f, 0.86f),new Vector3(2.53f, 0.86f)};
-    Vector2[] posterceralinea = {new Vector3(-2.5f, -0.80f),new Vector3(-0.86f, -0.80f),
-                                 new Vector3(0.86f, -0.80f),new Vector3(2.53f, -0.80f)};
-    Vector2[] poscuartalinea = {new Vector3(-2.5f, -2.50f),new Vector3(-0.86f, -2.50f),
-                                 new Vector3(0.86f, -2.50f),new Vector3(2.53f, -2.50f)};
-    */
-    //Matriz de las posiciones 
-
-    /*
-    Vector2[][] matrizPosiciones = new Vector2[4][];
-    */
-
-    //Matriz de los cubos: Cada una de las filas de la matriz
-    
-    /*
-    GameObject[] primeralinea = new GameObject[4];
-    GameObject[] segundalinea = new GameObject[4];
-    GameObject[] terceralinea = new GameObject[4];
-    GameObject[] cuartalinea = new GameObject[4];
-    */
-
-    //Matriz de todas las filas
-    
-    //GameObject[][] matrizFilas = new GameObject[4][];
-    
-
     //¿Debe crearse un nuevo cubo en una posicion aleatoria?
     bool debecrearsecubo = true;
     
@@ -132,7 +99,7 @@ public class Tablero : MonoBehaviour {
     bool animacioncreacionpendiente;
 
     //Para hacer comprobaciones
-    bool debug = true;
+    bool debug = false;
     
 
 
@@ -156,26 +123,7 @@ public class Tablero : MonoBehaviour {
         botonreinicio.gameObject.SetActive(false);
         //Añadimos el evento
         botonreinicio.onClick.AddListener(reiniciar);
-
-
-        //Cada fila de la matriz de posiciones es una fila de posiciones
-
-        /*
-        matrizPosiciones[0] = posprimeralinea;
-        matrizPosiciones[1] = possegundalinea;
-        matrizPosiciones[2] = posterceralinea;
-        matrizPosiciones[3] = poscuartalinea;
-        */
-
-        //Cada fila de la matriz de filas es una fila
-
-        /*
-        matrizFilas[0] = primeralinea;
-        matrizFilas[1] = segundalinea;
-        matrizFilas[2] = terceralinea;
-        matrizFilas[3] = cuartalinea;
-        */
-
+        
         cargaSprites();
               
 
@@ -185,39 +133,17 @@ public class Tablero : MonoBehaviour {
         //Las listas de animación
         cubosAnimarCreacion = new List<GameObject>();
 
-        //Creamos dos cubos en posiciones aleatorias
-
-        /*
-        generarCuboPosicionAleatoria();
-        generarCuboPosicionAleatoria();*/
-
 
         //Creamos 4 cubos en posiciones no aleatorias
 
-        crearMultiplesCubos(3, 2, 1, 1,
+        /*crearMultiplesCubos(3, 2, 1, 1,
                             1, 1, 2, 0,
                             0, 3, 0, 2,
-                            2, 2, 0, 0);
+                            2, 2, 0, 0);*/
 
-        //crearCubo(0, 0, 1, "Creacion");
-        //crearCubo(0, 1, 1, "Creacion");
-        //crearCubo(0, 2, 2, "Creacion");
-        //crearCubo(0, 3, 1, "Creacion");
+        generarCuboPosicionAleatoria();
+        generarCuboPosicionAleatoria();
 
-        //crearCubo(1, 0, 1, "Creacion");
-        //crearCubo(1, 1, 1, "Creacion");
-        //crearCubo(1, 2, 1, "Creacion");
-        //crearCubo(1, 3, 1, "Creacion");
-
-        //crearCubo(2, 0, 1, "Creacion");
-        //crearCubo(2, 1, 1, "Creacion");
-        //crearCubo(2, 2, 1, "Creacion");
-        //crearCubo(2, 3, 1, "Creacion");
-
-        //crearCubo(3, 0, 1, "Creacion");
-        //crearCubo(3, 1, 1, "Creacion");
-        //crearCubo(3, 2, 1, "Creacion");
-        //crearCubo(3, 3, 1, "Creacion");
 
 
 
@@ -435,7 +361,7 @@ public class Tablero : MonoBehaviour {
                 break;
         }
 
-        if (tipoanimacion.Equals("generacion"))
+        if (tipoanimacion.Equals("Creacion"))
         {            
             //El cubo empieza a escala cero
             cubo.transform.localScale=new Vector3(0,0,0);

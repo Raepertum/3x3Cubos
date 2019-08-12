@@ -79,7 +79,6 @@ public class DatosTablero
     }
     public Vector2[] getColumnaCoordenadas(int numcolumna)
     {
-        GameObject[] columna = getColumna(numcolumna);
         Vector2[] coordenadascolumna = new Vector2[4];
         coordenadascolumna[0] = posprimeralinea[numcolumna];
         coordenadascolumna[1] = possegundalinea[numcolumna];
