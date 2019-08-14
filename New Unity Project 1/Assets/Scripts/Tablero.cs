@@ -94,9 +94,12 @@ public class Tablero : MonoBehaviour {
 
     //La lista de cubos cuya animación consiste en ser creados
     List<GameObject> cubosAnimarCreacion = new List<GameObject>();
-    
+    //La lista de cubos cuya animación consiste en desplazarse a la derecha
+    List<GameObject> cubosAnimarDerecha = new List<GameObject>();
+
     //Las booleanas que se utilizan para controlar la animacion
     bool animacioncreacionpendiente;
+    bool animacionderechapendiente;
 
     //Para hacer comprobaciones
     bool debug = false;
@@ -132,7 +135,7 @@ public class Tablero : MonoBehaviour {
 
         //Las listas de animación
         cubosAnimarCreacion = new List<GameObject>();
-
+        cubosAnimarDerecha = new List<GameObject>();
 
         //Creamos 4 cubos en posiciones no aleatorias
 
@@ -457,7 +460,7 @@ public class Tablero : MonoBehaviour {
         }
     }
 
-    public void movimientoIzquierda(int numfila) //GameObject[] fila, Vector2[] filaposiciones)
+    public void movimientoIzquierda(int numfila)
     {
         GameObject[] fila = datosTablero.getFila(numfila);
         Vector2[] filaposiciones = datosTablero.getFilaCoordenadas(numfila);
@@ -1039,6 +1042,10 @@ public class Tablero : MonoBehaviour {
             animarCreacion();
 
         }
+        if (animacionderechapendiente)
+        {
+            animarDerecha();
+        }
 
 
         //Código del movimiento
@@ -1061,14 +1068,6 @@ public class Tablero : MonoBehaviour {
                 movimientoDerecha(1);
                 movimientoDerecha(2);
                 movimientoDerecha(3);
-
-                /*
-                movimientoDerecha(matrizFilas[0], posprimeralinea);
-                movimientoDerecha(matrizFilas[1], possegundalinea);
-                movimientoDerecha(matrizFilas[2], posterceralinea);
-                movimientoDerecha(matrizFilas[3], poscuartalinea);
-                */
-
 
                 //Creamos cubo si corresponde
                 if (debecrearsecubo)
@@ -1199,8 +1198,7 @@ public class Tablero : MonoBehaviour {
     {
         //Los cubos que eliminaremos
         List<GameObject> cubosaeliminar = new List<GameObject>();
-
-
+        
         //Si la lista de cubos cuya creación estamos animando es mayor que cero
         if (cubosAnimarCreacion.Count > 0)
         {
@@ -1230,7 +1228,6 @@ public class Tablero : MonoBehaviour {
                     //incrementamos su tamaño
                     cubo.transform.localScale += incrementoescala;
                 }
-
             }
          }
         //Si el tamaño de la lista de cubos que tenemos que reescalar es cero (No hay más cubos)
@@ -1247,23 +1244,52 @@ public class Tablero : MonoBehaviour {
             {
                 cubosAnimarCreacion.Remove(cubo);
             }
+        }
+}
 
+    //Función que se encarga de comprobar si hay animaciones de movimiento a la derecha pendientes
+    public void animarDerecha()
+    {
+        //Los cubos que eliminaremos
+        List<GameObject> cubosaeliminar = new List<GameObject>();
 
+        //Si la lista de cubos cuya creación estamos animando es mayor que cero
+        if (cubosAnimarDerecha.Count > 0)
+        {
+            foreach (GameObject cubo in cubosAnimarDerecha)
+            {                
+                if ((cubo.transform.position.x < cubo.GetComponent<Cubo>().getPosicionXDeseada())
+                {
+                    transform.Translate(0.1f, 0, 0, cubo.transform);
+                    cubosaeliminar.Add(cubo);
+                }
+                else if ((cubo.transform.position.x == cubo.GetComponent<Cubo>().getPosicionXDeseada())                   
+                {
+                    cubosaeliminar.Add(cubo);
+                }
+                //Si el cubo es de menor tamaño del que debiera
+                else if ((cubo.transform.position.x > cubo.GetComponent<Cubo>().getPosicionXDeseada())                   
+                {
+                    transform.Translate(0.1f, 0, 0, cubo.transform);
+                }
+            }
+        }
+        else
+        {
+            animacionderechapendiente = false;
         }
 
-
+        //Por cada cubo que esté en cubosaeliminar
+        foreach (GameObject cubo in cubosaeliminar)
+        {
+            if (cubosAnimarDerecha.Contains(cubo))
+            {
+                cubosAnimarDerecha.Remove(cubo);
+            }
+        }
     }
 
 
-    /*
-     Prototipo de generador gráfico de cubos
-
-      
-     */
-     /*
-    Sprite generadorCuboGrafico(int numcubo)
-    {
-    }*/
 
     public void actualizapuntuacion(int puntos)
     {
