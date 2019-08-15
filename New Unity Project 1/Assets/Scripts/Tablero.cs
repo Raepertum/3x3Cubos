@@ -371,6 +371,7 @@ public class Tablero : MonoBehaviour {
             //Añadimos el cubo a la lista de cubos cuya creación debemos animar
             cubosAnimarCreacion.Add(cubo);
         }
+
     }
 
    
@@ -428,6 +429,7 @@ public class Tablero : MonoBehaviour {
             if (existeCuboDentroLimiteYPuedeFusionarseConCuboALaIzquierda(fila, numcolumna))
             {                
                 if (hayEspacioALaDerecha(fila, numcolumna)){
+                    
                     crearCuboALaDerechaTrasFusionConCuboIzquierdaYActualizarPuntuacion(numfila, numcolumna, filaposiciones);                    
                 }
                 else
@@ -452,7 +454,12 @@ public class Tablero : MonoBehaviour {
 
             else if (existeCuboDentroLimiteQueNoTieneCuboALaIzquierda(fila, numcolumna))
             {               
-                if (hayEspacioALaDerecha(fila, numcolumna)){                   
+                if (hayEspacioALaDerecha(fila, numcolumna)){
+                    
+                    animacionderechapendiente = true;
+                    cubosAnimarDerecha.Add(datosTablero.getCubo(numfila, numcolumna));
+                    datosTablero.getCubo(numfila, numcolumna).GetComponent<Cubo>().setPosicionXDeseada(1000);
+
                     mueveCuboAlaDerecha(fila, filaposiciones, numcolumna);
                     debecrearsecubo = true;
                 }
@@ -901,33 +908,10 @@ public class Tablero : MonoBehaviour {
     //**********************************************************
 
     public void mueveCuboAlaDerecha(GameObject[] fila, Vector2[] filaposiciones, int columna)
-    {
-
-        float difX = (fila[columna].transform.position.x - (filaposiciones[columna + 1]).x);
-        float fracciondifX = difX / 100;
-
-
-
-        for (int i = 0; i < 100; i++)
-        {
-
-            float posXActual = fila[columna].transform.position.x;
-            float posXDeseada = filaposiciones[columna + 1].x;
-            float diferenciaEntrePosicionXActualyDeseada = posXActual - posXDeseada;
-
-            if (diferenciaEntrePosicionXActualyDeseada < fracciondifX)
-            {
-                fila[columna].transform.position = (filaposiciones[columna + 1]);
-            }
-            else
-            {
-                fila[columna].transform.Translate(new Vector3(-fracciondifX * Time.deltaTime, 0, 0));
-            }
-        }
-
-
-        fila[columna + 1] = fila[columna];
-        fila[columna] = null;
+    {        
+        //fila[columna].transform.position = (filaposiciones[columna + 1]);
+        //fila[columna + 1] = fila[columna];
+        //fila[columna] = null;
         debecrearsecubo = true;
     }
 
@@ -1044,6 +1028,7 @@ public class Tablero : MonoBehaviour {
         }
         if (animacionderechapendiente)
         {
+            print("Anima la derecha");
             animarDerecha();
         }
 
@@ -1196,6 +1181,7 @@ public class Tablero : MonoBehaviour {
     //Función que se encarga de comprobar si hay animaciones de generación de cubos aleatorias pendientes
     public void animarCreacion()
     {
+
         //Los cubos que eliminaremos
         List<GameObject> cubosaeliminar = new List<GameObject>();
         
@@ -1250,6 +1236,11 @@ public class Tablero : MonoBehaviour {
     //Función que se encarga de comprobar si hay animaciones de movimiento a la derecha pendientes
     public void animarDerecha()
     {
+
+        puedeMover = false;
+
+        Vector3 otraposicion = new Vector3(0.01f, 0, 0);
+        
         //Los cubos que eliminaremos
         List<GameObject> cubosaeliminar = new List<GameObject>();
 
@@ -1258,19 +1249,21 @@ public class Tablero : MonoBehaviour {
         {
             foreach (GameObject cubo in cubosAnimarDerecha)
             {                
-                if ((cubo.transform.position.x < cubo.GetComponent<Cubo>().getPosicionXDeseada())
+                if ((cubo.transform.position.x > cubo.GetComponent<Cubo>().getPosicionXDeseada()))
                 {
-                    transform.Translate(0.1f, 0, 0, cubo.transform);
+
+                    cubo.transform.position += otraposicion;                    
                     cubosaeliminar.Add(cubo);
+
                 }
-                else if ((cubo.transform.position.x == cubo.GetComponent<Cubo>().getPosicionXDeseada())                   
+                else if ((cubo.transform.position.x == cubo.GetComponent<Cubo>().getPosicionXDeseada()))               
                 {
                     cubosaeliminar.Add(cubo);
-                }
-                //Si el cubo es de menor tamaño del que debiera
-                else if ((cubo.transform.position.x > cubo.GetComponent<Cubo>().getPosicionXDeseada())                   
+                    puedeMover = true;
+                }                
+                else if ((cubo.transform.position.x < cubo.GetComponent<Cubo>().getPosicionXDeseada()))                  
                 {
-                    transform.Translate(0.1f, 0, 0, cubo.transform);
+                    cubo.transform.position += otraposicion;
                 }
             }
         }
